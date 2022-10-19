@@ -97,9 +97,9 @@
                                                             <select id="user_role" name="user_role" class="form-control">
                                                                 <option value="">Select</option>
                                                             
-                                                                <option value="{{ config('constants.ROLES.SUPER')}}" {{ (config('constants.ROLES.SUPER') == $user_role)? 'selected': ' ' }} >
+                                                                <!-- <option value="{{ config('constants.ROLES.SUPER')}}" {{ (config('constants.ROLES.SUPER') == $user_role)? 'selected': ' ' }} >
                                                                     {{ config('constants.REVERSAL_ROLES.SUPER') }}
-                                                                </option>
+                                                                </option> -->
                                                                 <option value="{{ config('constants.ROLES.ADMIN')}}" {{ (config('constants.ROLES.ADMIN') == $user_role)? 'selected': ' ' }} >
                                                                     {{ config('constants.REVERSAL_ROLES.ADMIN') }}
                                                                 </option>

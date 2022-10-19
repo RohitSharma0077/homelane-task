@@ -12,6 +12,9 @@ use Illuminate\Validation\Rule;
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmailSend;
+use Symfony\Component\HttpFoundation\Response;
 
 class HomeController extends Controller
 {
@@ -283,7 +286,7 @@ class HomeController extends Controller
                         $is_del = User::where('id', $u_id)->delete();
                         if( !empty($is_del ) ){
                             $return_status['status'] = TRUE;
-                            $return_status['message'] = 'User Successfully Deleted';
+                            $return_status['message'] = 'User successfully deleted';
                             $return_status['data'] = array();
                         } 
                 }
@@ -435,22 +438,30 @@ class HomeController extends Controller
                 $return_status['data'] = array();
             }
             else{
-
+                $is_updated = '';
                 $last_id;
+              
                 if(empty($row_id)){ //create new item
                     $data_arr += array('created_at' => date('Y-m-d H:i:s'));
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
                     $last_id = $this->users_model->save_users_details($data_arr);
+                    $user_details = $this->users_model->get_users($last_id);
+                    $user_details->txt_password = $password;
+                    $genrated_mail = $this->send_mail_user($user_details, "User Added", "Welcome, Your account has been created.Here are your login credentials", );
                    
                 }
                 else{
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
                     $last_id = $this->users_model->save_users_details($data_arr, $row_id);
+                    $user_details = $this->users_model->get_users($row_id);
+                    $user_details->txt_password = $password;
+                    $is_updated = 1;
+                    $genrated_mail = $this->send_mail_user($user_details, "User Updated", "Here are updated details.", $is_updated);
                 }
 
                 if(!empty($last_id)){
                     $return_status['status'] = TRUE;
-                    $return_status['message'] = 'Users Details saved succesfully';
+                    $return_status['message'] = 'Users details saved succesfully';
                     $return_status['data'] = array();
                 }
             }            
@@ -461,10 +472,10 @@ class HomeController extends Controller
     /**
     * @return \Illuminate\Support\Collection
     */
-    public function export() 
-    {
-        return Excel::download(new UsersExport, 'users.xlsx');
-    }
+    // public function export() 
+    // {
+    //     return Excel::download(new UsersExport, 'users.xlsx');
+    // }
         
     /**
     * @return \Illuminate\Support\Collection
@@ -475,4 +486,66 @@ class HomeController extends Controller
                 
     //     return back();
     // }
+
+    public function send_mail_user($user_details = NULL, $sub = NULL, $msg= NULL, $is_updated = NULL)
+    {
+        //dd($user_details);
+        $u_details = $user_details;
+        $to_email = 'r_test007@yopmail.com';       
+        $m_sub = $sub;
+        $m_msg = '';
+
+        switch($u_details->user_role){
+            case '1':
+                $u_role = 'Super Admin';
+            break;
+            case '2':
+                $u_role = 'User Admin';
+            break;
+            case '3':
+                $u_role = 'Sales Team';
+            break;
+        }
+
+        if(!empty($is_updated)){
+            $m_msg = '<div>
+            <h3>Here are updated User details</h3>
+            <ul>
+            <li>ID : '.$u_details->id.' </li>
+            <li>First Name : '.$u_details->first_name.' </li>
+            <li>Last Name : '.$u_details->last_name.' </li>
+            <li>User Role : '.$u_role.' </li>
+            <li>Email : '.$u_details->email.' </li>
+            <li>Password : '.$u_details->txt_password.' </li>
+            <br><br>
+            </ul> 
+            </<div>';
+        }
+        else{
+
+            $m_msg = '<div>
+            <h3>Welcome, Your account has been created.<br>
+            Here are your login credentials</h3>
+            <ul>
+            <li>Email : '.$u_details->email.' </li>
+            <li>Password : '.$u_details->txt_password.' </li>
+            <br><br>
+            </ul> 
+            </<div>';
+
+        }
+       
+
+         $mail_data = [
+             'm_sub' => $m_sub,
+             'm_msg' => $m_msg,
+         ];
+        $sendInvoiceMail = Mail::to($to_email);
+        $sendInvoiceMail->send(new EmailSend($mail_data));
+  
+   
+        return response()->json([
+            'message' => 'Email has been sent.'
+        ], Response::HTTP_OK);
+    }
 }

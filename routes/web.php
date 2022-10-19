@@ -41,32 +41,39 @@ Route::get('/clear-cache', function() {
 
 });
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Auth::routes();
 
-Route::get('users/listing', [App\Http\Controllers\HomeController::class, 'users_view'])->name('users_view');
-Route::get('users/ajax/list', [App\Http\Controllers\HomeController::class, 'users_ajax_list'])->name('users_ajax_list');
-Route::get('users/edit/{id?}', [App\Http\Controllers\HomeController::class, 'edit_user_master_view'])->name('edit_user_master_view');
-Route::post('/admin/delete/user', [App\Http\Controllers\HomeController::class, 'delete_user'])->name('delete_user');
-Route::post('save/users/details', [App\Http\Controllers\HomeController::class, 'save_users_details'])->name('save_users_details');
+// common routes
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('users-export', function () {
     return Excel::download(new UsersExport, 'users.xlsx');
 })->name('users.export');
-
-Auth::routes();
+Route::get('/send-email', [MailController::class, 'sendEmail']);
 
 Route::middleware(['auth', 'role_super:superadmin'])->group(function () {
     // User is authentication and has super admin role
     Route::get('/super', [App\Http\Controllers\HomeController::class, 'index'])->name('home_super');
+    Route::get('users/listing', [App\Http\Controllers\HomeController::class, 'users_view'])->name('users_view');
+    Route::get('users/ajax/list', [App\Http\Controllers\HomeController::class, 'users_ajax_list'])->name('users_ajax_list');
+    Route::get('users/edit/{id?}', [App\Http\Controllers\HomeController::class, 'edit_user_master_view'])->name('edit_user_master_view');
+    Route::post('/admin/delete/user', [App\Http\Controllers\HomeController::class, 'delete_user'])->name('delete_user');
+    Route::post('save/users/details', [App\Http\Controllers\HomeController::class, 'save_users_details'])->name('save_users_details');
    
 });
 
 
 Route::middleware(['auth', 'role_admin:admin'])->group(function () {
     Route::get('/admin', [App\Http\Controllers\HomeController::class, 'index'])->name('home_admin');
+    // Route::get('users/listing', [App\Http\Controllers\HomeController::class, 'users_view'])->name('users_view');
+    // Route::get('users/ajax/list', [App\Http\Controllers\HomeController::class, 'users_ajax_list'])->name('users_ajax_list');
+    // Route::get('users/edit/{id?}', [App\Http\Controllers\HomeController::class, 'edit_user_master_view'])->name('edit_user_master_view');
+    // Route::post('/admin/delete/user', [App\Http\Controllers\HomeController::class, 'delete_user'])->name('delete_user');
+    // Route::post('save/users/details', [App\Http\Controllers\HomeController::class, 'save_users_details'])->name('save_users_details');
    
 });
 
 
 Route::middleware(['auth', 'role_sales:sales'])->group(function () {
     Route::get('/sales', [App\Http\Controllers\HomeController::class, 'index'])->name('home_sales');
+    // Route::get('users/listing', [App\Http\Controllers\HomeController::class, 'users_view'])->name('users_view');
 });
