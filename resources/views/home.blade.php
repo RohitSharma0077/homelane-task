@@ -1,5 +1,6 @@
 <?php 
-//dd($category_count);
+//dd(config('constants.ROLES.SUPER'));
+//dd($breadcrumbs);
 
 ?>
 
@@ -16,7 +17,21 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+
+              @if(isset($breadcrumbs) && !empty($breadcrumbs))
+                @for($i = 0; $i < count($breadcrumbs); $i++)
+
+                  @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
+                    <li class="breadcrumb-item"><a href="{{ $breadcrumbs[$i]['url'] }}">
+                  @endif
+                    {{ $breadcrumbs[$i]['name'] }}
+
+                      @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
+                       </a> </li> > 
+                      @endif
+                @endfor
+					  @endif
+             
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -48,7 +63,7 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>{{ $category_count }}<sup style="font-size: 20px">%</sup></h3>
+                <h3>{{ $category_count }}</h3>
 
                 <p>Categories</p>
               </div>

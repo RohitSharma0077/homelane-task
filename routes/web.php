@@ -42,8 +42,28 @@ Route::get('/clear-cache', function() {
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('users/listing', [App\Http\Controllers\HomeController::class, 'users_view'])->name('users_view');
+Route::get('users/ajax/list', [App\Http\Controllers\HomeController::class, 'users_ajax_list'])->name('users_ajax_list');
+Route::get('users/edit/{id?}', [App\Http\Controllers\HomeController::class, 'edit_user_master_view'])->name('edit_user_master_view');
+Route::post('/admin/delete/user', [App\Http\Controllers\HomeController::class, 'delete_user'])->name('delete_user');
 
 Auth::routes();
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-//Route::any('dashboard/landing/page', [HomeController::class,'dashboard_landing_page'])->name('dashboard_landing_page');
+
+Route::middleware(['auth', 'role_super:superadmin'])->group(function () {
+    // User is authentication and has super admin role
+    Route::get('/super', [App\Http\Controllers\HomeController::class, 'index'])->name('home_super');
+   
+});
+
+
+Route::middleware(['auth', 'role_admin:admin'])->group(function () {
+    Route::get('/admin', [App\Http\Controllers\HomeController::class, 'index'])->name('home_admin');
+   
+});
+
+
+Route::middleware(['auth', 'role_sales:sales'])->group(function () {
+    Route::get('/sales', [App\Http\Controllers\HomeController::class, 'index'])->name('home_sales');
+});
