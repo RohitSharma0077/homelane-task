@@ -54,7 +54,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{{ route('cat_view') }}" class="nav-link">
               <i class="nav-icon fas fa-list-alt"></i>
               <p>
                 Category
@@ -63,7 +63,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{{ route('users_view') }}" class="nav-link">
               <i class="nav-icon fas fa-shopping-cart"></i>
               <p>
                 Products

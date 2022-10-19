@@ -6,7 +6,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Users</h1>
+            <h1>Category</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -37,18 +37,15 @@
             <div class="card">
                 <div class="card-header text-right">
                      <a class="btn btn-success" href="{{ route('edit_user_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
-                     <a class="btn btn-info" href="{{ route('users.export') }}"><i class="fa fa-file"></i> Export</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                <table id="users_datatable_table" class="table table-bordered table-striped" style="width: 100%;">
+                <table id="cat_datatable_table" class="table table-bordered table-striped" style="width: 100%;">
                     <thead>
                         <tr>
                             <th><input type="checkbox" name="select_all" value="1" class="select_all_checkbox" id="select-all-checkbox"></th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>User Email</th>
-                            <th>Role</th>
+                            <th>Category Name</th>
+                            <th>Category Description</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -74,13 +71,13 @@
 	var oTable;
 	$(function() {
 		var rows_selected = [];
-		oTable = $('#users_datatable_table').DataTable({
+		oTable = $('#cat_datatable_table').DataTable({
 			responsive:true,
 			"order": [[1, 'desc']], //By default, order by descending 1st column
 	        "processing": true,
 	        "serverSide": true,
 	        "ajax": {
-	        	url: "{{ route('users_ajax_list') }}",
+	        	url: "{{ route('cat_ajax_list') }}",
 	        	"dataType":"json",
 				
 	    	},
@@ -93,10 +90,8 @@
 		    },
 	        "columns": [
 	        	{ "data": "checkbox", orderable: false, searchable: false},
-	        	{ "data": "first_name"},
-                { "data": "last_name"},
-				{ "data": "email"},
-				{ "data": "user_role"},
+	        	{ "data": "category_name"},
+                { "data": "category_desc"},
 	            { "data": "action", orderable: false, searchable: false  }
 	        ]
 		});
@@ -105,7 +100,7 @@
 		// 	oTable.ajax.reload();
 		// });
 		// Handle click on checkbox
-        $('#users_datatable_table tbody').on('click', 'input[type="checkbox"]', function(e){
+        $('#cat_datatable_table tbody').on('click', 'input[type="checkbox"]', function(e){
           var $row = $(this).closest('tr');
           
           // Get row data
@@ -141,16 +136,16 @@
         });
 
         // Handle click on table cells with checkboxes
-        $('#users_datatable_table').on('click', 'tbody td, thead th:first-child', function(e){
+        $('#cat_datatable_table').on('click', 'tbody td, thead th:first-child', function(e){
           // $(this).parent().find('input[type="checkbox"]').trigger('click');
         });
 
         // Handle click on "Select all" control
         $('thead input[name="select_all"]', oTable.table().container()).on('click', function(e){
           if(this.checked){
-             $('#users_datatable_table tbody input[type="checkbox"]:not(:checked)').trigger('click');
+             $('#cat_datatable_table tbody input[type="checkbox"]:not(:checked)').trigger('click');
           } else {
-             $('#users_datatable_table tbody input[type="checkbox"]:checked').trigger('click');
+             $('#cat_datatable_table tbody input[type="checkbox"]:checked').trigger('click');
           }
 
           // Prevent click event from propagating to parent
@@ -210,24 +205,6 @@ $(document).on('click', '.delete_user', function() {
     
 });
 //Delete user close
-</script>
-
-<script>
-  $(function () {
-    // $("#users_datatable_table").DataTable({
-    //   "responsive": true, "lengthChange": false, "autoWidth": false,
-    //   "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    // }).buttons().container().appendTo('#users_datatable_table_wrapper .col-md-6:eq(0)');
-    // $('#example2').DataTable({
-    //   "paging": true,
-    //   "lengthChange": false,
-    //   "searching": false,
-    //   "ordering": true,
-    //   "info": true,
-    //   "autoWidth": false,
-    //   "responsive": true,
-    // });
-  });
 </script>
 
 @endsection
