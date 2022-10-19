@@ -46,4 +46,4 @@ Route::get('/clear-cache', function() {
 Auth::routes();
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::any('dashboard/landing/page', [HomeController::class,'dashboard_landing_page'])->name('dashboard_landing_page');
+//Route::any('dashboard/landing/page', [HomeController::class,'dashboard_landing_page'])->name('dashboard_landing_page');

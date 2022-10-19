@@ -24,16 +24,30 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
-    {
-        return view('home');
-    }
-
-    public function dashboard_landing_page()
-    {
+    {   
         $user_count = User::where('deleted_at','=',NULL)->count();
         $product_count = Product::where('deleted_at','=',NULL)->count();
         $category_count = Category::where('deleted_at','=',NULL)->count();
         //dd($product_count);
-        
+
+        $u_count = $c_count = $p_count = 0;
+        if(!empty($user_count)){
+            $u_count = $user_count;
+        }
+        if(!empty($product_count)){
+            $p_count = $product_count;
+        }
+        if(!empty($category_count)){
+            $c_count = $category_count;
+        }
+
+        $data = array(
+           
+            "category_count" => $c_count,  
+            "product_count" => $p_count,  
+            "user_count"    => $u_count,  
+          
+        );
+        return view('home', $data);
     }
 }
