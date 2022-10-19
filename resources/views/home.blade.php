@@ -17,21 +17,19 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
+                @if(isset($breadcrumbs) && !empty($breadcrumbs))
+                  @for($i = 0; $i < count($breadcrumbs); $i++)
 
-              @if(isset($breadcrumbs) && !empty($breadcrumbs))
-                @for($i = 0; $i < count($breadcrumbs); $i++)
+                    @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
+                      <li class="breadcrumb-item"><a href="{{ $breadcrumbs[$i]['url'] }}">
+                    @endif
+                      {{ $breadcrumbs[$i]['name'] }}
 
-                  @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                    <li class="breadcrumb-item"><a href="{{ $breadcrumbs[$i]['url'] }}">
-                  @endif
-                    {{ $breadcrumbs[$i]['name'] }}
-
-                      @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                       </a> </li> > 
-                      @endif
-                @endfor
-					  @endif
-             
+                        @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
+                        </a> </li> > 
+                        @endif
+                  @endfor
+              @endif
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->

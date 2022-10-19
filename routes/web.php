@@ -48,6 +48,7 @@ Route::get('users/listing', [App\Http\Controllers\HomeController::class, 'users_
 Route::get('users/ajax/list', [App\Http\Controllers\HomeController::class, 'users_ajax_list'])->name('users_ajax_list');
 Route::get('users/edit/{id?}', [App\Http\Controllers\HomeController::class, 'edit_user_master_view'])->name('edit_user_master_view');
 Route::post('/admin/delete/user', [App\Http\Controllers\HomeController::class, 'delete_user'])->name('delete_user');
+Route::post('save/users/details', [App\Http\Controllers\HomeController::class, 'save_users_details'])->name('save_users_details');
 
 Auth::routes();
 

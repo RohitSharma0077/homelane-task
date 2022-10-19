@@ -125,4 +125,30 @@ class User extends Authenticatable
         }           
         return $result;
     }
+
+    public function save_users_details($data, $id=NULL){
+
+        if(empty($data)){
+            return FALSE;
+        }
+        if(empty($id)){ //Creating row
+            $id = DB::table($this->table)->insertGetId(
+                $data
+            );
+            return $id;
+        }
+        else{ //Editing row
+            
+            $result = DB::table($this->table)
+                        ->where($this->table.'.id', $id)
+                        ->update($data);
+            if(!empty($result)){
+                return $id;
+            }
+            return FALSE; 
+        }
+
+        return $result;
+
+    }
 }

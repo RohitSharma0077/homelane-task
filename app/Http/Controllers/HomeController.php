@@ -290,4 +290,168 @@ class HomeController extends Controller
             );
         }
     }
+
+    public function edit_user_master_view($id = NULL){
+        $data = array();		
+		$heading = 'Add User';
+        $user_details = '';
+        $pending_data = '';
+        $permission_array = array();
+        $breadcrumbs = array(
+			array('name' => 'Home',
+			'url' => route('home')),
+			array('name' => 'Users',
+			'url' => route('users_view')),
+		);
+
+        if(!empty($id)){
+            $heading = 'Edit User';
+            $breadcrumbs[] = array('name' => 'Edit User',
+            'url' => '');  
+            $user_details = $this->users_model->get_users($id);
+            $user_role = $user_details->user_role; 
+        }
+        else{
+            $breadcrumbs[] = array('name' => 'Add User',
+            'url' => '');    
+        }
+
+        $data = [
+        	'heading'    => $heading,
+            'go_back_url'    => route('users_view'),
+			'breadcrumbs' => $breadcrumbs,
+            'row_id'        => $id,
+            'user_details'  => $user_details,
+
+        ];
+        return view('users_add_edit', $data);
+    }
+
+    public function save_users_details(Request $request){
+        $return_status = array(
+            'status' => FALSE,
+            'message' => 'Users details failed to save',
+            'data' => ''
+        );
+
+
+        $user_role = $request->user_role;
+        $email = $request->email;
+        $password = $request->password;
+        $first_name = $request->first_name;
+        $last_name = $request->last_name;
+        $row_id = $request->row_id;
+
+        $rules = array(
+            'user_role' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email'     => [
+                            'required',
+                            'email',
+                                Rule::unique('users')
+                                ->where(function ($query) {
+                                    $query->where('deleted_at', '=', NULL);
+                                })
+                                ->ignore($row_id),
+                        ],            
+            // 'profile_pic' => 'nullable|mimes:jpeg,jpg,png,gif|max:5250',
+        );
+        
+        $messages = [
+            'user_role.required' 		=> 'User Role Required',
+            'first_name.required' 		=> 'First Name Role Required',
+            'last_name.required' 		=> 'Last Name Required',
+            'email.required' 			=>  'Email Required',
+            'email.unique' 				=> 'Email already taken',
+            'email.email' 				=> 'Invalid email format',
+			// 'profile_pic.max' 	   		=> "Profile image size cant be greater than 5MB",
+        ];
+
+		if(!empty($request->password)||!empty($request->password_confirmation)){
+            $rules += array(
+                'password' => 'required|min:6',
+                'password_confirmation' => 'required|same:password',
+            );
+                
+            $messages += array(
+                'password_confirmation.same' => trans('custom.must_match_password'),
+            ); 
+        }
+        
+        // Validate the request
+        $validator = Validator::make($request->all() , $rules, $messages);
+        if ($validator->fails()) {
+            $err_data = array();
+            $errors = $validator->errors()->getMessages();
+            foreach ($errors as $key => $value) {
+                $err_data[] = implode(' ', $value);
+                // $return_status['message'] = $value;
+            }
+            $err_msg = implode(' ', $err_data);
+            if(!empty($err_msg))
+                $return_status['message'] = $err_msg;
+            
+            $return_status['data'] = $errors;
+            
+        }
+        else{
+            $data_arr = array();
+            $data_arr += array('user_role' => $user_role);
+            if(!empty($request->profile_pic)){
+                // $result_file = saveFileToFolder($request->file('profile_pic'));  
+                // if($result_file['status'] === TRUE){
+                    
+                //     $data_arr += array('profile_pic' => $result_file['data']->getFileName());
+                // }
+                // else{
+ 
+                //     $return_status['message'] = 'Pic failed to save';
+                //     $return_status['data'] = $errors;
+                // }
+            }
+
+            if(!empty($email)){
+                $data_arr += array('email' => $email);
+            }
+
+            if(!empty($password)){
+                $data_arr += array('password' => bcrypt($password));    // encrypting password
+            }
+
+            if(!empty($first_name)){
+                        $data_arr += array('first_name' => $first_name);
+            }
+            if(!empty($last_name)){
+                $data_arr += array('last_name' => $last_name);
+            }
+            
+            if( empty($data_arr) ){
+                $return_status['status'] = FALSE;
+                $return_status['message'] = 'data missing';
+                $return_status['data'] = array();
+            }
+            else{
+
+                $last_id;
+                if(empty($row_id)){ //create new item
+                    $data_arr += array('created_at' => date('Y-m-d H:i:s'));
+                    $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
+                    $last_id = $this->users_model->save_users_details($data_arr);
+                   
+                }
+                else{
+                    $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
+                    $last_id = $this->users_model->save_users_details($data_arr, $row_id);
+                }
+
+                if(!empty($last_id)){
+                    $return_status['status'] = TRUE;
+                    $return_status['message'] = 'Users Details saved succesfully';
+                    $return_status['data'] = array();
+                }
+            }            
+        }
+        return response()->json($return_status);
+    }
 }

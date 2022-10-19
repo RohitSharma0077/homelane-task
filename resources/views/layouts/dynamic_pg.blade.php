@@ -33,6 +33,11 @@
         <!-- summernote -->
         <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
 
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+
         <!-- Datatables -->
 		<link href="{{ asset('/plugins/r_plugins/DataTables/datatables.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('/plugins/r_plugins/DataTables/Responsive-2.2.2/css/responsive.bootstrap4.css') }}" rel="stylesheet" type="text/css" />

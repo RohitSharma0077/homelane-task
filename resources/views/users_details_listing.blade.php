@@ -1,49 +1,75 @@
 @extends('layouts.dynamic_pg')
 @section('content_dynamic')
-<style>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Users</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                @if(isset($breadcrumbs) && !empty($breadcrumbs))
+                    @for($i = 0; $i < count($breadcrumbs); $i++)
 
-    #users_datatable_table_length{
-        display:none;
-    }
-    #users_datatable_table_filter{
-        margin-left: 61%;
-    }
+                    @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
+                        <li class="breadcrumb-item"><a href="{{ $breadcrumbs[$i]['url'] }}">
+                    @endif
+                        {{ $breadcrumbs[$i]['name'] }}
 
-</style>
-<div id= "example2_wrapper" class="content-wrapper">
-    <div class="card">
-        <div class="card-header">
-            <div class='row'>
-                <div class='col-6 col-md-6'>
-           		 <h4 class="m-b-0">Users List</h4>
-        	</div>
-			<div class='col-6 col-md-6 text-right'>
-					<a class="btn btn-success" href="#"><i class="fa fa-plus-circle"></i> Add New</a>
-				</div>
-            </div>
+                        @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
+                        </a> </li> > 
+                        @endif
+                    @endfor
+                @endif
+            </ol>
+          </div>
         </div>
+      </div><!-- /.container-fluid -->
+    </section>
 
-        	<div class="d-block mt-3">
-                <table id="users_datatable_table" class="table table-bordered table-hover dataTable dtr-inline">
-                	<thead>
-                		<tr>
-	                		<th><input type="checkbox" name="select_all" value="1" class="select_all_checkbox" id="select-all-checkbox"></th>
-	                		<th>First Name</th>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+            <div class="card">
+                <div class="card-header text-right">
+                     <a class="btn btn-success" href="{{ route('edit_user_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
+                     <a class="btn btn-info" href="{{ route('edit_user_master_view') }}"><i class="fa fa-file"></i> Export</a>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                <table id="users_datatable_table" class="table table-bordered table-striped" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" name="select_all" value="1" class="select_all_checkbox" id="select-all-checkbox"></th>
+                            <th>First Name</th>
                             <th>Last Name</th>
-	                		<th>User Email</th>
-	                		<th>Role</th>
-							<th>Action</th>
-	                	</tr>
-                	</thead>
-                	<tbody>
-                		
-                	</tbody>
+                            <th>User Email</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
                 </table>
+                </div>
+                <!-- /.card-body -->
             </div>
-     	</div>
-
-    </div>
+            <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
 </div>
+
 <script type="text/javascript">
 	var oTable;
 	$(function() {
@@ -187,4 +213,23 @@ $(document).on('click', '.delete_user', function() {
 });
 //Delete user close
 </script>
+
+<script>
+  $(function () {
+    // $("#users_datatable_table").DataTable({
+    //   "responsive": true, "lengthChange": false, "autoWidth": false,
+    //   "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    // }).buttons().container().appendTo('#users_datatable_table_wrapper .col-md-6:eq(0)');
+    // $('#example2').DataTable({
+    //   "paging": true,
+    //   "lengthChange": false,
+    //   "searching": false,
+    //   "ordering": true,
+    //   "info": true,
+    //   "autoWidth": false,
+    //   "responsive": true,
+    // });
+  });
+</script>
+
 @endsection
