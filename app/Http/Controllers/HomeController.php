@@ -9,6 +9,9 @@ use Validator;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Illuminate\Validation\Rule;
+use App\Exports\UsersExport;
+use App\Imports\UsersImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HomeController extends Controller
 {
@@ -454,4 +457,22 @@ class HomeController extends Controller
         }
         return response()->json($return_status);
     }
+
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+    public function export() 
+    {
+        return Excel::download(new UsersExport, 'users.xlsx');
+    }
+        
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+    // public function import() 
+    // {
+    //     Excel::import(new UsersImport,request()->file('file'));
+                
+    //     return back();
+    // }
 }

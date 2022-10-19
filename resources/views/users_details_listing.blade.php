@@ -37,7 +37,7 @@
             <div class="card">
                 <div class="card-header text-right">
                      <a class="btn btn-success" href="{{ route('edit_user_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
-                     <a class="btn btn-info" href="{{ route('edit_user_master_view') }}"><i class="fa fa-file"></i> Export</a>
+                     <a class="btn btn-info" href="{{ route('users.export') }}"><i class="fa fa-file"></i> Export</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
