@@ -3,10 +3,10 @@
 
 <?php
 
-    $product_name     = 'required';
-    $product_desc 		= 'required';
-    $product_price 		= 'required';
-    $product_img 		= 'required';
+    $req_product_name     = 'required';
+    $req_product_desc 		= 'required';
+    $req_product_price 		= 'required';
+    $req_product_img 		= 'required';
 
 	if (empty($pd_details)){
 		$product_name        = old('product_name');
@@ -71,14 +71,19 @@
                                                                 <option value="">Select</option>
 
                                                                 <?php
-                                                                 foreach($get_cat_list as $cat){ ?>
-
-                                                                        <option value="{{ $cat->id }}" {{ ($cat->id == $product_cat)?    'selected': ' ' }} >
+                                                                 foreach($get_cat_list as $cat){ 
+                                                                    if(!empty($product_cat)) { ?>
+                                                                    <option value="{{ $cat->id }}" {{ ($cat->id == $product_cat)?    'selected': ' ' }} >
                                                                         {{ $cat->category_name }}
-                                                                    </option>
+                                                                    </option>    
+                                                                      <?php } 
+                                                                      else {  ?>
 
-                                                                <?php } ?>
-                                                                
+                                                                      <option value="{{ $cat->id }}" >
+                                                                        {{ $cat->category_name }}
+                                                                    </option>   
+                                                                    <?php } ?>
+                                                                 <?php } ?>
                                                             </select>
                                                             @if ($errors->has('product_cat'))
                                                                 <small class="form-control-feedback">{{ $errors->first('product_cat') }}</small>
@@ -90,7 +95,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">Product Name *</label>
-                                                            <input type="product_name" id="product_name" name="product_name" class="form-control" placeholder=" product_name" {{$product_name}} value = "{{$product_name}}" >
+                                                            <input type="product_name" id="product_name" name="product_name" class="form-control" placeholder=" product_name" {{$req_product_name}} value = "{{$product_name}}" >
                                                             @if ($errors->has('product_name'))
                                                                 <small class="form-control-feedback">{{ $errors->first('product_name') }}</small>
                                                             @endif
@@ -99,7 +104,7 @@
                                                     <div class="col-md-6">
                                                         <div class="hv_field admin_field display_none form-group">
                                                             <label class="control-label">Description*</label>
-                                                            <input type="text" id="product_desc" name="product_desc" class="form-control" placeholder=" Description" {{ $product_desc }} value = "{{ $product_desc }}" >
+                                                            <input type="text" id="product_desc" name="product_desc" class="form-control" placeholder=" Description" {{ $req_product_desc }} value = "{{ $product_desc }}" >
                                                             @if ($errors->has('product_desc'))
                                                                 <small class="form-control-feedback">{{ $errors->first('product_desc') }}</small>
                                                             @endif
@@ -108,7 +113,7 @@
                                                     <div class="col-md-6">
                                                         <div class="hv_field admin_field display_none form-group">
                                                             <label class="control-label">Price*</label>
-                                                            <input type="number" id="product_price" name="product_price" class="form-control" placeholder=" Price" {{ $product_price }} value = "{{ $product_price }}" >
+                                                            <input type="number" id="product_price" name="product_price" class="form-control" placeholder=" Price" {{ $req_product_price }} value = "{{ $product_price }}" >
                                                             @if ($errors->has('product_price'))
                                                                 <small class="form-control-feedback">{{ $errors->first('product_price') }}</small>
                                                             @endif
@@ -118,17 +123,19 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group ">
                                                             <label>Image</label>
-                                                            <input name="product_img"  id="product_img" type="file" class='form-control'>
+                                                            <input name="product_img" {{$req_product_img }} id="product_img" type="file" class='form-control'>
                                                             @if ($errors->has('product_img'))
                                                                 <small class="form-control-feedback">{{ $errors->first('product_img') }}</small>
                                                             @endif  
                                                         </div>
                                                     </div> 
-                                                    <div class="col-md-6">
-                                                        <div class="form-group ">
-                                                            <img src="{{ asset($product_img) }}" id="profile_img_display" width='80' height='80'>
+                                                    <?php if(!empty($product_img)) { ?>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group ">
+                                                                <img src="{{ asset($product_img) }}" id="profile_img_display" width='80' height='80'>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    <?php } ?>
                                                 </div>
                                             </div>
                                         </div>   
