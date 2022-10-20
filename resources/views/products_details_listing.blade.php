@@ -186,6 +186,43 @@ $(document).on('click', '.delete_pd', function() {
     
 });
 //Delete user close
+
+$(document).on('click', '.cat_data_load', function() {
+    var cat_nm = $(this).attr("cat-name");
+    var cat_des = $(this).attr("cat-des");
+    var text ='<h5>Name: '+cat_nm+' </h5><h5>Description: '+cat_des+' </h5>';
+    $( "#cat_dataid" ).append( text );
+});
+
+$(document).on('click', '.cls_modal', function() {
+    $("#cat_dataid").val('');
+    $("#cat_dataid").text('');
+    $("#cat_dataid").empty();
+    $("#cat_dataid").val('False');
+});
+
 </script>
+
+
+
+ <!-- Modal -->
+ <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">Category details</h5>
+            <button type="button" class="close cls_modal" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="cat_dataid"> </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary cls_modal" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>
 
 @endsection

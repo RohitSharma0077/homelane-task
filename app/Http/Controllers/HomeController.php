@@ -1009,6 +1009,12 @@ class HomeController extends Controller
                     $img = asset('uploads/' .$row->product_img);
                     $product_img = '<img src="'.$img.'" id="profile_img_display" width="50" height="50">';
                 }
+
+                $cat_id = $row->product_cat;
+                $cat_details = $this->users_model->get_cat($cat_id);
+
+                $product_cat_name = '<button type="button" cat-name="'.$cat_details->category_name.'" cat-des="'.$cat_details->category_desc.'" class="btn btn-outline-primary cat_data_load" data-toggle="modal" data-target="#exampleModalCenter">
+                '.$row->product_cat_name.'</button>';
                
 
 				// these pass to views
@@ -1019,7 +1025,7 @@ class HomeController extends Controller
                     'product_desc'  => e(!empty($row->product_desc)? $row->product_desc:''),
                     'product_price'  => e(!empty($row->product_price)? $row->product_price:''),
                     'product_img'  => $product_img,
-                    'product_cat_name'  => e(!empty($row->product_cat_name)? $row->product_cat_name:''),
+                    'product_cat_name'  => $product_cat_name,
                     'action'    =>	$action_col_chk
                 );
         	}
