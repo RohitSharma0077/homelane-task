@@ -1,33 +1,8 @@
 @extends('layouts.dynamic_pg')
 @section('content_dynamic')
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Category</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                @if(isset($breadcrumbs) && !empty($breadcrumbs))
-                    @for($i = 0; $i < count($breadcrumbs); $i++)
-
-                    @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                        <li class="breadcrumb-item"><a href="{{ $breadcrumbs[$i]['url'] }}">
-                    @endif
-                        {{ $breadcrumbs[$i]['name'] }}
-
-                        @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                        </a> </li> > 
-                        @endif
-                    @endfor
-                @endif
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+   <!-- breadcrumbs -->
+   @include('layouts.common_breadcrumbs')
 
     <!-- Main content -->
     <section class="content">
@@ -36,7 +11,7 @@
             <div class="col-12">
             <div class="card">
                 <div class="card-header text-right">
-                     <a class="btn btn-success" href="{{ route('edit_user_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
+                     <a class="btn btn-success" href="{{ route('edit_cat_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -155,19 +130,19 @@
 
 
 //Delete user
-$(document).on('click', '.delete_user', function() {
+$(document).on('click', '.delete_cat', function() {
     var u_id = $(this).attr("data-uid");
     var u_role = $(this).attr("u-role");
     if(u_role == 1){ // super admin cannot be deleted by anyone
         alert('Super Admin cannot be delete. Contact Administrator !!!');
     }
     else{
-        if(confirm("Do you really want to delete this user?")){
+        if(confirm("Category may have products in it. Do you really want to delete this category?")){
             $this = $(this);
             $this.prop("disabled", true);
             $.ajax({
                 type: "POST",
-                url: "{{ route('delete_user') }}",
+                url: "{{ route('delete_cat') }}",
                 data: {'u_id': u_id },
                 headers: {
                     // 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')

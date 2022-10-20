@@ -13,8 +13,8 @@
     	$req_c_password         = 'required';
     }
     else{
-    	$req_password  = '';
-    	$req_c_password  = '';
+    	$req_password  = 'required';
+    	$req_c_password  = 'required';
     }
 
 	if (empty($user_details)){
@@ -37,33 +37,8 @@
     }
 ?>
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Users</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                @if(isset($breadcrumbs) && !empty($breadcrumbs))
-                    @for($i = 0; $i < count($breadcrumbs); $i++)
-
-                    @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                        <li class="breadcrumb-item"><a href="{{ $breadcrumbs[$i]['url'] }}">
-                    @endif
-                        {{ $breadcrumbs[$i]['name'] }}
-
-                        @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                        </a> </li> > 
-                        @endif
-                    @endfor
-                @endif
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+    <!-- breadcrumbs -->
+    @include('layouts.common_breadcrumbs')
 
     <!-- Main content -->
     <section class="content">
@@ -159,6 +134,7 @@
                                         </div>   
                                         <div class="form-actions m-t-5">
                                             <div class="pull-right">
+                                                <div class="pre-loader" style="display:none;"></div>
                                                 <button type="submit" class="btn btn-success" id="submit_button_user"> <i class="fa fa-check"></i> Save</button>
                                                 <a class="btn btn-danger" href="{{ $go_back_url }}"> <i class="fa fa-times"></i> Cancel</a>
                                             </div>
@@ -244,14 +220,7 @@
                 success: function (result) {
                     // Showing flash modal on success
                     if(result.status){
-                        // console.log(user_role);
-                        if(user_role != 8){
                             showSweetAlertMessage(result.status,result.message, "{{ route('users_view') }}");
-                        }
-                        else{
-                            showSweetAlertMessage(result.status,result.message, "{{ route('users_view') }}");
-                        }
-
 					}else{
 						showSweetAlertMessage(result.status,result.message);
 						$("#submit_button_user").attr('disabled',false);

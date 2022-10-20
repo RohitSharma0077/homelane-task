@@ -1,33 +1,8 @@
 @extends('layouts.dynamic_pg')
 @section('content_dynamic')
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Users</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                @if(isset($breadcrumbs) && !empty($breadcrumbs))
-                    @for($i = 0; $i < count($breadcrumbs); $i++)
-
-                    @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                        <li class="breadcrumb-item"><a href="{{ $breadcrumbs[$i]['url'] }}">
-                    @endif
-                        {{ $breadcrumbs[$i]['name'] }}
-
-                        @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                        </a> </li> > 
-                        @endif
-                    @endfor
-                @endif
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+     <!-- breadcrumbs -->
+     @include('layouts.common_breadcrumbs')
 
     <!-- Main content -->
     <section class="content">

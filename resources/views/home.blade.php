@@ -8,34 +8,8 @@
 @section('content_dynamic')
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0">Dashboard</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                @if(isset($breadcrumbs) && !empty($breadcrumbs))
-                  @for($i = 0; $i < count($breadcrumbs); $i++)
-
-                    @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                      <li class="breadcrumb-item"><a href="{{ $breadcrumbs[$i]['url'] }}">
-                    @endif
-                      {{ $breadcrumbs[$i]['name'] }}
-
-                        @if(isset($breadcrumbs[$i]['url']) && !empty($breadcrumbs[$i]['url']))
-                        </a> </li> > 
-                        @endif
-                  @endfor
-              @endif
-            </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+   <!-- breadcrumbs -->
+   @include('layouts.common_breadcrumbs')
 
     <!-- Main content -->
     <section class="content">
@@ -53,7 +27,7 @@
               <div class="icon">
                 <i class="ion ion-person-add"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('users_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -68,7 +42,7 @@
               <div class="icon">
                 <i class="ion ion-bag"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('cat_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -83,7 +57,7 @@
               <div class="icon">
                   <i class="ion ion-bag"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('pd_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
@@ -91,7 +65,7 @@
       </div><!-- /.container-fluid -->
     
       <!-- Calender -->
-      <div class="card bg-gradient-success">
+      <div class="card bg-gradient-success" style= "display:none;">
         <div class="card-header border-0 ui-sortable-handle" style="cursor: move;">
 
         <h3 class="card-title">

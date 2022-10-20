@@ -17,14 +17,13 @@ class RoleCheckSales
     public function handle(Request $request, Closure $next)
     {
        // return $next($request);
-
-        if ( Auth::user() && Auth::user()->user_role == config('constants.ROLES.SALES') ) {
+        if ((Auth::user() && Auth::user()->user_role == config('constants.ROLES.SUPER')) || (Auth::user() && Auth::user()->user_role == config('constants.ROLES.SALES'))) {
 
             return $next($request);
 
         }
         abort(403);
-        // return back()
+        //return back();
         //         ->with('return_popup_status', FALSE) // send back with flashed session data
         //         ->with('return_popup_message', 'Unauthorized Access'); // send back with flashed session data
     }

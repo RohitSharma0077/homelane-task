@@ -64,6 +64,31 @@
         <script src="{{ asset('plugins/r_plugins/sweetAlerts/sweetalert.min.js') }}"></script>
         <!-- Sweet Alert Plugin Close -->
 
+        <style>
+            .pre-loader {
+                    border: 16px solid #343a40;
+                    border-radius: 50%;
+                    border-top: 16px solid #343a40;
+                    border-bottom: 0px solid black;
+                    width: 33px;
+                    height: 33px;
+                    -webkit-animation: spin 2s linear infinite;
+                    animation: spin 2s linear infinite;
+                    margin-left: 2%;
+                }
+
+                /* Safari */
+                @-webkit-keyframes spin {
+                0% { -webkit-transform: rotate(0deg); }
+                100% { -webkit-transform: rotate(360deg); }
+                }
+
+                @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+                }
+        </style>
+
     </head>
 
     <body class="hold-transition sidebar-mini layout-fixed">

@@ -63,7 +63,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{ route('users_view') }}" class="nav-link">
+            <a href="{{ route('pd_view') }}" class="nav-link">
               <i class="nav-icon fas fa-shopping-cart"></i>
               <p>
                 Products

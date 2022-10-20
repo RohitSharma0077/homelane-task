@@ -224,4 +224,43 @@ class User extends Authenticatable
         }           
         return $result;
     }
+
+    public function save_cat_details($data, $id=NULL){
+
+        if(empty($data)){
+            return FALSE;
+        }
+        if(empty($id)){ //Creating row
+            $id = DB::table('categories')->insertGetId(
+                $data
+            );
+            return $id;
+        }
+        else{ //Editing row
+            
+            $result = DB::table('categories')
+                        ->where('categories.id', $id)
+                        ->update($data);         
+            if(!empty($result)){
+                return $id;
+            }
+            return FALSE; 
+        }
+        return $result;
+
+    }
+
+    public function get_cat_list(){
+
+        $query = DB::table('categories')
+        ->select(DB::raw('categories.id, categories.category_name'));
+        $query->groupBy('categories.category_name');
+    
+            $result = $query->get();
+            if($result->count() == 0){
+                $result = FALSE;
+            }
+         //  dd($query->toSql());
+        return $result;
+}
 }
