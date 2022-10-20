@@ -8,6 +8,9 @@ use App\Models\Category;
 use Validator;
 use Illuminate\Support\Facades\DB;
 use Auth;
+Use Redirect;
+use Session;
+use File;
 use Illuminate\Validation\Rule;
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
@@ -124,7 +127,7 @@ class HomeController extends Controller
 
             array(
 				"db"=> "users.last_name",
-				"dt"=> "email",
+				"dt"=> "last_name",
 			),
             array( 
                 "db"=> "users.email" ,
@@ -408,8 +411,8 @@ class HomeController extends Controller
         else{
             $data_arr = array();
             $data_arr += array('user_role' => $user_role);
-            if(!empty($request->profile_pic)){
-                // $result_file = saveFileToFolder($request->file('profile_pic'));  
+           // if(!empty($request->profile_pic)){
+                // $result_file = $this->saveFileToFolder($request->file('profile_pic'));  
                 // if($result_file['status'] === TRUE){
                     
                 //     $data_arr += array('profile_pic' => $result_file['data']->getFileName());
@@ -419,7 +422,7 @@ class HomeController extends Controller
                 //     $return_status['message'] = 'Pic failed to save';
                 //     $return_status['data'] = $errors;
                 // }
-            }
+          //  }
 
             if(!empty($email)){
                 $data_arr += array('email' => $email);
@@ -663,9 +666,9 @@ class HomeController extends Controller
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
 
-                // Sales team only view the users 
+                // Sales team access/view the categories 
                 // 1=SuperAdmin, 2= UserAdmin, 3=SalesTeam
-                if($login_users_role == 1 || $login_users_role == 2){
+                if($login_users_role == 1 || $login_users_role == 3){
                     $action_col_chk = $action_str;
                 }
                 else{
@@ -881,28 +884,28 @@ class HomeController extends Controller
         $breadcrumbs = array(
 			array('name' => 'Home',
 			'url' => route('home')),
-			array('name' => 'Users',
+			array('name' => 'Products',
 			'url' =>  ''),
 			
 		);
         $login_users_role = Auth::user()->user_role;
-        if($login_users_role == 1 || $login_users_role == 2){
+        if($login_users_role == 1 || $login_users_role == 3){
             $action_col_chk = 'have_access';
         }
         else{
             $action_col_chk = '';
         }
 		$data = [
-			'page_title' 	 => 'Users List',
+			'page_title' 	 => 'Products List',
 			'active_sidebar' => '',
             'action_col_chk' => $action_col_chk,
 			'breadcrumbs' => $breadcrumbs,
-            "heading" => 'Users',
+            "heading" => 'Products',
 
 		];
         //dd($data);
 		
-        return view('users_details_listing', $data);
+        return view('products_details_listing', $data);
 		
     }
 
@@ -916,22 +919,22 @@ class HomeController extends Controller
             ),
 
             array( 
-                "db"=> "users.first_name" ,     // database table's column name
-                "dt"=> "first_name" ,     // name we get from as
+                "db"=> "products.product_name" ,     // database table's column name
+                "dt"=> "product_name" ,     // name we get from as
             ),
 
             array(
-				"db"=> "users.last_name",
-				"dt"=> "email",
+				"db"=> "products.product_desc",
+				"dt"=> "product_desc",
 			),
             array( 
-                "db"=> "users.email" ,
-                "dt"=> "email" ,
+                "db"=> "products.product_price" ,
+                "dt"=> "product_price" ,
             ),
            
             array( 
-                "db"=> "users.user_role" ,
-                "dt"=> "user_role" ,
+                "db"=> "products.product_cat" ,
+                "dt"=> "product_cat_name" ,
             ),
             array( 
                 "db"=> "action" ,
@@ -965,9 +968,8 @@ class HomeController extends Controller
 
         $filter_arr_clone = $filter_arr;
         $filter_arr_clone['recordsFiltered'] = TRUE;
-
-        $o_list = $this->users_model->get_users(NULL, $filter_arr);
-        $totalFiltered = ($this->users_model->get_users(NULL, $filter_arr_clone));
+        $o_list = $this->users_model->get_products(NULL, $filter_arr);
+        $totalFiltered = ($this->users_model->get_products(NULL, $filter_arr_clone));
         if(!empty($totalFiltered)){
             $totalFiltered = count($totalFiltered);
         }
@@ -975,7 +977,7 @@ class HomeController extends Controller
             $totalFiltered = 0;
         }
 
-        $totalRecords = $this->users_model->get_users(NULL);
+        $totalRecords = $this->users_model->get_products(NULL);
         if(!empty($totalRecords)){
             $totalRecords = count($totalRecords);
         } 
@@ -988,41 +990,36 @@ class HomeController extends Controller
         if(!empty($o_list)){
         	foreach ($o_list as $row) {
 
-                $action_str = ' <a class="edit_user_details" href="'.route('edit_user_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
+                $action_str = ' <a class="edit_pd_details" href="'.route('edit_pd_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
 
-                $action_str .= ' <a class="delete_user text text-danger" u-role="'.$row->user_role.'" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
+                $action_str .= ' <a class="delete_pd text text-danger" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
 
-                // Sales team only view the users 
+                // Sales team can view/access the products 
                 // 1=SuperAdmin, 2= UserAdmin, 3=SalesTeam
-                if($login_users_role == 1 || $login_users_role == 2){
+                if($login_users_role == 1 || $login_users_role == 3){
                     $action_col_chk = $action_str;
                 }
                 else{
                     $action_col_chk = 'No Access';
                 }
-                switch($row->user_role){
-                    case '1':
-                        $u_role = 'Super Admin';
-                    break;
-                    case '2':
-                        $u_role = 'User Admin';
-                    break;
-                    case '3':
-                        $u_role = 'Sales Team';
-                    break;
+                $product_img = '';
+                if(!empty($row->product_img)){
+                    $img = asset('uploads/' .$row->product_img);
+                    $product_img = '<img src="'.$img.'" id="profile_img_display" width="50" height="50">';
                 }
-                
+               
 
 				// these pass to views
                 $checkbox = '<input type="checkbox" class="checked_id" name="ids[]" value="'.$row->id.'">';
         		$data[] = (object) array(
                     'checkbox' => $checkbox,
-                    'email'  => e(!empty($row->email)? $row->email:''),
-                    'first_name'  => e(!empty($row->first_name)? $row->first_name:''),
-                    'last_name'  => e(!empty($row->last_name)? $row->last_name:''),
-                    'user_role'  => $u_role,
+                    'product_name'  => e(!empty($row->product_name)? $row->product_name:''),
+                    'product_desc'  => e(!empty($row->product_desc)? $row->product_desc:''),
+                    'product_price'  => e(!empty($row->product_price)? $row->product_price:''),
+                    'product_img'  => $product_img,
+                    'product_cat_name'  => e(!empty($row->product_cat_name)? $row->product_cat_name:''),
                     'action'    =>	$action_col_chk
                 );
         	}
@@ -1045,7 +1042,7 @@ class HomeController extends Controller
             
             $return_status = array(
                 'status'  => FALSE,
-                'message' => 'Failed to delete User',
+                'message' => 'Failed to delete product',
                 'data'    => $request->all()
             );
 
@@ -1085,10 +1082,10 @@ class HomeController extends Controller
                 } else {
                         $delete_flag = FALSE;
                         $user_row = DB::table('users')->where('id', '=', $u_id)->first();
-                        $is_del = User::where('id', $u_id)->delete();
+                        $is_del = Product::where('id', $u_id)->delete();
                         if( !empty($is_del ) ){
                             $return_status['status'] = TRUE;
-                            $return_status['message'] = 'User successfully deleted';
+                            $return_status['message'] = 'Product successfully deleted';
                             $return_status['data'] = array();
                         } 
                 }
@@ -1101,92 +1098,71 @@ class HomeController extends Controller
 
     public function edit_pd_master_view($id = NULL){
         $data = array();		
-		$heading = 'Add User';
-        $user_details = '';
+		$heading = 'Add Product';
+        $pd_details = '';
         $pending_data = '';
         $permission_array = array();
         $breadcrumbs = array(
 			array('name' => 'Home',
 			'url' => route('home')),
-			array('name' => 'Users',
-			'url' => route('users_view')),
+			array('name' => 'Products',
+			'url' => route('pd_view')),
 		);
 
+        $get_cat_list = $this->users_model->get_cat_list();
+
         if(!empty($id)){
-            $heading = 'Edit User';
-            $breadcrumbs[] = array('name' => 'Edit User',
+            $heading = 'Edit Product';
+            $breadcrumbs[] = array('name' => 'Edit Product',
             'url' => '');  
-            $user_details = $this->users_model->get_users($id);
-            $user_role = $user_details->user_role; 
+            $pd_details = $this->users_model->get_products($id);
         }
         else{
-            $breadcrumbs[] = array('name' => 'Add User',
+            $breadcrumbs[] = array('name' => 'Add Product',
             'url' => '');    
         }
 
         $data = [
         	'heading'    => $heading,
-            'go_back_url'    => route('users_view'),
+            'go_back_url'    => route('pd_view'),
 			'breadcrumbs' => $breadcrumbs,
             'row_id'        => $id,
-            'user_details'  => $user_details,
+            'pd_details'  => $pd_details,
+            'get_cat_list'  => $get_cat_list,
 
         ];
-        return view('users_add_edit', $data);
+        return view('pd_add_edit', $data);
     }
 
     public function save_pd_details(Request $request){
         $return_status = array(
             'status' => FALSE,
-            'message' => 'Users details failed to save',
+            'message' => 'Product details failed to save',
             'data' => ''
         );
 
 
-        $user_role = $request->user_role;
-        $email = $request->email;
-        $password = $request->password;
-        $first_name = $request->first_name;
-        $last_name = $request->last_name;
+        $product_cat = $request->product_cat;
+        $product_name = $request->product_name;
+        $product_desc = $request->product_desc;
+        $product_price = $request->product_price;
         $row_id = $request->row_id;
 
         $rules = array(
-            'user_role' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email'     => [
-                            'required',
-                            'email',
-                                Rule::unique('users')
-                                ->where(function ($query) {
-                                    $query->where('deleted_at', '=', NULL);
-                                })
-                                ->ignore($row_id),
-                        ],            
-            // 'profile_pic' => 'nullable|mimes:jpeg,jpg,png,gif|max:5250',
+            'product_cat' => 'required',
+            'product_desc' => 'required',
+            'product_price' => 'required',
+            'product_name' => 'required',         
+             'product_img' => 'nullable|mimes:jpeg,jpg,png,gif|max:5250',
         );
         
         $messages = [
-            'user_role.required' 		=> 'User Role Required',
-            'first_name.required' 		=> 'First Name Role Required',
-            'last_name.required' 		=> 'Last Name Required',
-            'email.required' 			=>  'Email Required',
-            'email.unique' 				=> 'Email already taken',
-            'email.email' 				=> 'Invalid email format',
-			// 'profile_pic.max' 	   		=> "Profile image size cant be greater than 5MB",
+            'product_cat.required' 		=> 'User Role Required',
+            'product_desc.required' 		=> 'First Name Role Required',
+            'product_price.required' 		=> 'Last Name Required',
+            'product_name.required' 			=>  'product_name Required',
+			'product_img.max' 	   		=> "Profile image size cant be greater than 5MB",
         ];
-
-		if(!empty($request->password)||!empty($request->password_confirmation)){
-            $rules += array(
-                'password' => 'required|min:6',
-                'password_confirmation' => 'required|same:password',
-            );
-                
-            $messages += array(
-                'password_confirmation.same' => trans('custom.must_match_password'),
-            ); 
-        }
-        
         // Validate the request
         $validator = Validator::make($request->all() , $rules, $messages);
         if ($validator->fails()) {
@@ -1205,33 +1181,33 @@ class HomeController extends Controller
         }
         else{
             $data_arr = array();
-            $data_arr += array('user_role' => $user_role);
-            if(!empty($request->profile_pic)){
-                // $result_file = saveFileToFolder($request->file('profile_pic'));  
-                // if($result_file['status'] === TRUE){
+            $data_arr += array('product_cat' => $product_cat);
+            if(!empty($request->product_img)){
+                $result_file = $this->saveFileToFolder($request->file('product_img'));  
+                if($result_file['status'] === TRUE){
                     
-                //     $data_arr += array('profile_pic' => $result_file['data']->getFileName());
-                // }
-                // else{
+                    $data_arr += array('product_img' => $result_file['data']->getFileName());
+                }
+                else{
  
-                //     $return_status['message'] = 'Pic failed to save';
-                //     $return_status['data'] = $errors;
-                // }
+                    $return_status['message'] = 'Pic failed to save';
+                    $return_status['data'] = $errors;
+                }
             }
 
-            if(!empty($email)){
-                $data_arr += array('email' => $email);
+            if(!empty($product_name)){
+                $data_arr += array('product_name' => $product_name);
             }
 
             if(!empty($password)){
                 $data_arr += array('password' => bcrypt($password));    // encrypting password
             }
 
-            if(!empty($first_name)){
-                        $data_arr += array('first_name' => $first_name);
+            if(!empty($product_desc)){
+                        $data_arr += array('product_desc' => $product_desc);
             }
-            if(!empty($last_name)){
-                $data_arr += array('last_name' => $last_name);
+            if(!empty($product_price)){
+                $data_arr += array('product_price' => $product_price);
             }
             
             if( empty($data_arr) ){
@@ -1246,29 +1222,97 @@ class HomeController extends Controller
                 if(empty($row_id)){ //create new item
                     $data_arr += array('created_at' => date('Y-m-d H:i:s'));
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $last_id = $this->users_model->save_users_details($data_arr);
-                    $user_details = $this->users_model->get_users($last_id);
-                    $user_details->txt_password = $password;
-                    $genrated_mail = $this->send_mail_user($user_details, "User Added", "Welcome, Your account has been created.Here are your login credentials", );
-                   
+                    $last_id = $this->users_model->save_pd_details($data_arr);
                 }
                 else{
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $last_id = $this->users_model->save_users_details($data_arr, $row_id);
-                    $user_details = $this->users_model->get_users($row_id);
-                    $user_details->txt_password = $password;
-                    $is_updated = 1;
-                    $genrated_mail = $this->send_mail_user($user_details, "User Updated", "Here are updated details.", $is_updated);
+                    $last_id = $this->users_model->save_pd_details($data_arr, $row_id);
                 }
 
                 if(!empty($last_id)){
                     $return_status['status'] = TRUE;
-                    $return_status['message'] = 'Users details successfully saved';
+                    $return_status['message'] = 'Product details successfully saved';
                     $return_status['data'] = array();
                 }
             }            
         }
         return response()->json($return_status);
     }
+
+    //To store image 
+	function saveFileToFolder($file = NULL, $destination_path = ''){
+
+		if(empty($file)){
+
+			return array(
+				'status'	=> FALSE,
+				'message'	=> trans('missing_arg'),
+				'data'		=> array(),
+			);
+		}
+			
+
+		// $file = $request->file('image_name');
+		// $file = $request->file($filename);
+	   
+		//Display File Name
+		$filename = $file->getClientOriginalName();
+		// echo 'File Name: '.$filename;
+		// echo '<br>';
+	   
+		//Display File Extension
+		$file_extension = $file->getClientOriginalExtension();
+		// echo 'File Extension: '.$file_extension;
+		// echo '<br>';
+		
+		//Display File Real Path
+		$real_path = $file->getRealPath();
+		// echo 'File Real Path: '.$real_path;
+		// echo '<br>';
+	   
+		//Display File Size
+		$file_size = $file->getSize();
+		// echo 'File Size: '.$file_size;
+		// echo '<br>';
+	   
+		//Display File Mime Type
+		$file_mime_type = $file->getMimeType();
+		// echo 'File Mime Type: '.$file_mime_type;
+		// echo '<br>';
+		
+		//Display Destination Path
+		if(empty($destination_path)){
+			$destination_path = public_path('uploads/');
+		} else {
+			$destination_path = public_path('uploads/').$destination_path;
+		}
+		// echo 'File Destination Path: '.$destination_path;
+		if(!File::isDirectory($destination_path)) {
+		    File::makeDirectory($destination_path, 0777, true, true);
+		}
+
+		
+
+		$image_name = time().'_'.$filename;
+		$image_name = preg_replace('/[^a-zA-Z0-9_.]/', '_', $image_name);
+
+		$uploaded_data = $file->move( $destination_path , $image_name );
+			
+		
+		if( !empty( $uploaded_data )){
+			return array(
+				'status'	=> TRUE,
+				'message'	=> 'Uploaded successfully.',
+				'data'		=> $uploaded_data,
+			);
+		}
+		else{
+			return array(
+				'status'	=> FALSE,
+				'message'	=> 'Not uploaded successfully. Please try again!!',
+				'data'		=> $uploaded_data,
+			);
+		}
+	}
     
 }

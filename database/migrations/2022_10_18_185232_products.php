@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('product_name');
             $table->string('product_desc');
-            $table->string('product_price');
+            $table->integer('product_price');
             $table->string('product_img')->nullable();
             $table->bigInteger('product_cat');
             $table->timestamp('deleted_at')->nullable();
