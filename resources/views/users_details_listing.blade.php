@@ -11,7 +11,9 @@
             <div class="col-12">
             <div class="card">
                 <div class="card-header text-right">
-                     <a class="btn btn-success" href="{{ route('edit_user_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
+                    @if(getLoggedInUserRole() != config('constants.ROLES.SALES'))
+                      <a class="btn btn-success" href="{{ route('edit_user_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
+                    @endif
                      <a class="btn btn-info" href="{{ route('users.export') }}"><i class="fa fa-file"></i> Export</a>
                 </div>
                 <!-- /.card-header -->

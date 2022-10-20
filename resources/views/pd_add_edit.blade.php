@@ -108,7 +108,7 @@
                                                     <div class="col-md-6">
                                                         <div class="hv_field admin_field display_none form-group">
                                                             <label class="control-label">Price*</label>
-                                                            <input type="text" id="product_price" name="product_price" class="form-control" placeholder=" Price" {{ $product_price }} value = "{{ $product_price }}" >
+                                                            <input type="number" id="product_price" name="product_price" class="form-control" placeholder=" Price" {{ $product_price }} value = "{{ $product_price }}" >
                                                             @if ($errors->has('product_price'))
                                                                 <small class="form-control-feedback">{{ $errors->first('product_price') }}</small>
                                                             @endif
