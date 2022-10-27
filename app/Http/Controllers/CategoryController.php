@@ -37,7 +37,7 @@ class CategoryController extends Controller
     }
 
     // Category controller methods 
-    public function cat_view()
+    public function CatView()
     {
         $breadcrumbs = array(
             array('name' => 'Home',
@@ -67,7 +67,7 @@ class CategoryController extends Controller
         
     }
 
-    public function cat_ajax_list (Request $request){
+    public function CatAjaxList (Request $request){
 
         $columns = array(
 
@@ -179,7 +179,7 @@ class CategoryController extends Controller
         );  
     }
 
-    public function delete_cat(Request $request){
+    public function DeleteCat(Request $request){
             
         $return_status = array(
             'status'  => FALSE,
@@ -248,7 +248,7 @@ class CategoryController extends Controller
         }
     }
 
-    public function edit_cat_master_view($id = NULL){
+    public function EditCatMasterView($id = NULL){
         $data = array();		
         $heading = 'Add Category';
         $cat_details = '';
@@ -283,7 +283,7 @@ class CategoryController extends Controller
         return view('cat_add_edit', $data);
     }
 
-    public function save_cat_details(Request $request){
+    public function SaveCatDetails(Request $request){
         $return_status = array(
             'status' => FALSE,
             'message' => 'Category details failed to save',

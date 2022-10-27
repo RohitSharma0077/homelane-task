@@ -36,7 +36,7 @@ class UsersController extends Controller
         $this->limit = config('constants.DEFAULT_LIMIT');
     }
 
-    public function users_view()
+    public function UsersView()
     {
         $breadcrumbs = array(
 			array('name' => 'Home',
@@ -66,7 +66,7 @@ class UsersController extends Controller
 		
     }
 
-    public function users_ajax_list (Request $request){
+    public function UsersAjaxList (Request $request){
 
         $columns = array(
 
@@ -201,7 +201,7 @@ class UsersController extends Controller
         );  
     }
 
-    public function delete_user(Request $request){
+    public function DeleteUser(Request $request){
             
             $return_status = array(
                 'status'  => FALSE,
@@ -259,7 +259,7 @@ class UsersController extends Controller
         }
     }
 
-    public function edit_user_master_view($id = NULL){
+    public function EditUserMasterView($id = NULL){
         $data = array();		
 		$heading = 'Add User';
         $user_details = '';
@@ -295,7 +295,7 @@ class UsersController extends Controller
         return view('users_add_edit', $data);
     }
 
-    public function save_users_details(Request $request){
+    public function SaveUsersDetails(Request $request){
         $return_status = array(
             'status' => FALSE,
             'message' => 'Users details failed to save',

@@ -48,11 +48,11 @@ Auth::routes();
 
 // common routes, access by all
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('users/listing', [UsersController::class, 'users_view'])->name('users_view');
-Route::get('users/ajax/list', [UsersController::class, 'users_ajax_list'])->name('users_ajax_list');
-Route::post('delete/user', [UsersController::class, 'delete_user'])->name('delete_user');
-Route::get('users/edit/{id?}', [UsersController::class, 'edit_user_master_view'])->name('edit_user_master_view');
-Route::post('save/users/details', [UsersController::class, 'save_users_details'])->name('save_users_details');
+Route::get('users/listing', [UsersController::class, 'UsersView'])->name('users_view');
+Route::get('users/ajax/list', [UsersController::class, 'UsersAjaxList'])->name('users_ajax_list');
+Route::post('delete/user', [UsersController::class, 'DeleteUser'])->name('delete_user');
+Route::get('users/edit/{id?}', [UsersController::class, 'EditUserMasterView'])->name('edit_user_master_view');
+Route::post('save/users/details', [UsersController::class, 'SaveUsersDetails'])->name('save_users_details');
 
 Route::get('users-export', function () {
     return Excel::download(new UsersExport, 'users.xlsx');
@@ -77,17 +77,17 @@ Route::middleware(['auth', 'role_sales:sales'])->group(function () {
 
     // Category Routes
     Route::get('/sales', [HomeController::class, 'index'])->name('home_sales');
-    Route::get('cat/listing', [CategoryController::class, 'cat_view'])->name('cat_view');
-    Route::get('cat/ajax/list', [CategoryController::class, 'cat_ajax_list'])->name('cat_ajax_list');
-    Route::post('delete/cat', [CategoryController::class, 'delete_cat'])->name('delete_cat');
-    Route::get('cat/edit/{id?}', [CategoryController::class, 'edit_cat_master_view'])->name('edit_cat_master_view');
-    Route::post('save/cat/details', [CategoryController::class, 'save_cat_details'])->name('save_cat_details');
+    Route::get('cat/listing', [CategoryController::class, 'CatView'])->name('cat_view');
+    Route::get('cat/ajax/list', [CategoryController::class, 'CatAjaxList'])->name('cat_ajax_list');
+    Route::post('delete/cat', [CategoryController::class, 'DeleteCat'])->name('delete_cat');
+    Route::get('cat/edit/{id?}', [CategoryController::class, 'EditCatMasterView'])->name('edit_cat_master_view');
+    Route::post('save/cat/details', [CategoryController::class, 'SaveCatDetails'])->name('save_cat_details');
 
     // Products routes
-    Route::get('pd/listing', [ProductController::class, 'pd_view'])->name('pd_view');
-    Route::get('pd/ajax/list', [ProductController::class, 'pd_ajax_list'])->name('pd_ajax_list');
-    Route::post('delete/pd', [ProductController::class, 'delete_pd'])->name('delete_pd');
-    Route::get('pd/edit/{id?}', [ProductController::class, 'edit_pd_master_view'])->name('edit_pd_master_view');
-    Route::post('save/pd/details', [ProductController::class, 'save_pd_details'])->name('save_pd_details');
+    Route::get('pd/listing', [ProductController::class, 'PdView'])->name('pd_view');
+    Route::get('pd/ajax/list', [ProductController::class, 'PdAjaxList'])->name('pd_ajax_list');
+    Route::post('delete/pd', [ProductController::class, 'DeletePd'])->name('delete_pd');
+    Route::get('pd/edit/{id?}', [ProductController::class, 'EditPdMasterView'])->name('edit_pd_master_view');
+    Route::post('save/pd/details', [ProductController::class, 'SavePdDetails'])->name('save_pd_details');
 
 });

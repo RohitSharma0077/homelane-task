@@ -37,7 +37,7 @@ class ProductController extends Controller
     }
 
     // Products controller methods
-    public function pd_view()
+    public function PdView()
     {
         $breadcrumbs = array(
             array('name' => 'Home',
@@ -67,7 +67,7 @@ class ProductController extends Controller
         
     }
 
-    public function pd_ajax_list (Request $request){
+    public function PdAjaxList (Request $request){
 
         $columns = array(
 
@@ -202,7 +202,7 @@ class ProductController extends Controller
         );  
     }
 
-    public function delete_pd(Request $request){
+    public function DeletePd(Request $request){
             
             $return_status = array(
                 'status'  => FALSE,
@@ -260,7 +260,7 @@ class ProductController extends Controller
         }
     }
 
-    public function edit_pd_master_view($id = NULL){
+    public function EditPdMasterView($id = NULL){
         $data = array();		
         $heading = 'Add Product';
         $pd_details = '';
@@ -298,7 +298,7 @@ class ProductController extends Controller
         return view('pd_add_edit', $data);
     }
 
-    public function save_pd_details(Request $request){
+    public function SavePdDetails(Request $request){
         $return_status = array(
             'status' => FALSE,
             'message' => 'Product details failed to save',
