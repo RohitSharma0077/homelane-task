@@ -29,4 +29,3 @@ class RoleCheckAdmin
         //return \Redirect::to('/')->with(['type' => 'success','success_message' => 'Unauthorized access']);
     }
 }
-

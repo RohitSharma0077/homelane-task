@@ -4,26 +4,27 @@
 <?php
 
     $req_product_name     = 'required';
-    $req_product_desc       = 'required';
-    $req_product_price      = 'required';
-    $req_product_img        = 'required';
+    $req_product_desc 		= 'required';
+    $req_product_price 		= 'required';
+    $req_product_img 		= 'required';
 
-    if (empty($pd_details)){
-        $product_name        = old('product_name');
+	if (empty($pd_details)){
+		$product_name        = old('product_name');
         $product_desc   = old('product_desc');
         $product_price    = old('product_price');
 
     }
     else{
     
-        $product_name        = !empty($pd_details->product_name)?$pd_details->product_name: '';
+    	$product_name        = !empty($pd_details->product_name)?$pd_details->product_name: '';
         $product_desc    = !empty($pd_details->product_desc)?$pd_details->product_desc: '';
         $product_price     = !empty($pd_details->product_price)?$pd_details->product_price: '';
         $product_cat     = !empty($pd_details->product_cat)?$pd_details->product_cat: '';
 
         if(!empty($pd_details->product_img)){
-            $product_img = "/uploads/".$pd_details->product_img;
-        }
+	        $product_img = "/uploads/".$pd_details->product_img;
+            $req_product_img 		= ' ';
+	    }
     }
 
     if(!empty($get_cat_list)){
@@ -166,8 +167,8 @@
 </div>
 
 <script>
-    $(function(){
-        $('#add_pd_details_form')
+	$(function(){
+		$('#add_pd_details_form')
         .bootstrapValidator({
             excluded: ':disabled',
             message: 'This value is not valid',
@@ -204,9 +205,9 @@
 
         })
         .on('success.form.bv', function(e,data) {
-            
-            // data.bv.disableSubmitButtons(false);
-            // console.log('Saving Details');
+			
+			// data.bv.disableSubmitButtons(false);
+        	// console.log('Saving Details');
             // Prevent form submission
             e.preventDefault();
 
@@ -215,18 +216,18 @@
             // Get the BootstrapValidator instance
             var bv = $form.data('bootstrapValidator');
             // Use Ajax to submit form data
-            var formData = new FormData($("#add_pd_details_form")[0]);
-            // console.log(formData);
-            $(".pre-loader").show();
+			var formData = new FormData($("#add_pd_details_form")[0]);
+			// console.log(formData);
+			$(".pre-loader").show();
             var type = "POST"; //for creating new resource
             $.ajax({
                 type: type,
                 url:  "{{ route('save_pd_details') }}",
                 data: formData,
-                contentType: false,
-                dataType: "json",   
-                cache : false,
-                processData: false,
+				contentType: false,
+				dataType: "json",	
+				cache : false,
+				processData: false,
                 headers: {
                     'X-CSRF-TOKEN': $('input[name="_token"]').val()
                 },
@@ -234,11 +235,11 @@
                     // Showing flash modal on success
                     if(result.status){
                             showSweetAlertMessage(result.status,result.message, "{{ route('pd_view') }}");
-                    }else{
-                        showSweetAlertMessage(result.status,result.message);
-                        $("#submit_button_user").attr('disabled',false);
-                    }
-                    $(".pre-loader").hide();                   
+					}else{
+						showSweetAlertMessage(result.status,result.message);
+						$("#submit_button_user").attr('disabled',false);
+					}
+					$(".pre-loader").hide();                   
                 },
                 error: function (data) {
                     // Showing Flash modal if error occurs    
@@ -249,17 +250,17 @@
                     else if(data.status == 401){
                         showSweetAlertMessage(false,"{{ trans('custom.unauthenticated') }}", window.location.href );   
                     }
-                    $(".pre-loader").hide();
+					$(".pre-loader").hide();
                 }
             });
         })
 
         $('#add_pd_details_form').data('bootstrapValidator').resetForm();
 
-        // $('#add_pd_details_form').validator('update');
-        $("#submit_button_user").attr('disabled',false);
+		// $('#add_pd_details_form').validator('update');
+		$("#submit_button_user").attr('disabled',false);
 
-    });
+	});
 </script>
 
 @endsection
