@@ -23,6 +23,7 @@
 
         if(!empty($pd_details->product_img)){
 	        $product_img = "/uploads/".$pd_details->product_img;
+            $req_product_img 		= ' ';
 	    }
     }
 
