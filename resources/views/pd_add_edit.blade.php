@@ -123,7 +123,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group ">
                                                             <label>Image</label>
-                                                            <input name="product_img" {{$req_product_img }} id="product_img" type="file" class='form-control'>
+                                                            <input name="product_img" {{$req_product_img }} id="product_img" type="file" class='form-control'  accept="image/png,image/jpg,image/jpeg" data-max-size="2048">
                                                             @if ($errors->has('product_img'))
                                                                 <small class="form-control-feedback">{{ $errors->first('product_img') }}</small>
                                                             @endif  
