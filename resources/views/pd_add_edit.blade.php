@@ -200,6 +200,13 @@
                         }
                     }
                 },
+                product_img: {
+                    validators: {
+                        notEmpty :{
+                            message: 'Please select image file'
+                        }
+                    }
+                },
 
             }
 

@@ -317,7 +317,7 @@ class ProductController extends Controller
             'product_desc' => 'required',
             'product_price' => 'required',
             'product_name' => 'required',         
-                'product_img' => 'nullable|mimes:jpeg,jpg,png,gif|max:5250',
+            'product_img' => 'nullable|mimes:jpeg,jpg,png,gif|max:5250',
         );
         
         $messages = [
@@ -361,10 +361,6 @@ class ProductController extends Controller
 
             if(!empty($product_name)){
                 $data_arr += array('product_name' => $product_name);
-            }
-
-            if(!empty($password)){
-                $data_arr += array('password' => bcrypt($password));    // encrypting password
             }
 
             if(!empty($product_desc)){

@@ -13,6 +13,11 @@ class Category extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
+    protected $fillable = [
+        'category_name',
+        'category_desc',
+    ];
+
     public function get_cat($id = NULL , $filter_arr = array()){ 
         
         if(empty($id)){

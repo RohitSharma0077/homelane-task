@@ -365,7 +365,7 @@ class UsersController extends Controller
             $data_arr = array(
                 'user_role' => $user_role, 
                 'email' => $email, 
-                'password' => bcrypt($password),  // encrypting password
+                'password' => bcrypt($password),
                 'first_name' => $first_name, 
                 'last_name' => $last_name,                    
             );
@@ -384,6 +384,7 @@ class UsersController extends Controller
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
                     //dd($request->all());
                      $creating_user = User::create($data_arr);
+                     //dd($creating_user);
                      $last_id = $creating_user->id;
                     //$last_id = $this->users_model->save_users_details($data_arr);
                      //dd($last_id);

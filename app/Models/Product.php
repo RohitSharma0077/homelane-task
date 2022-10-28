@@ -13,6 +13,14 @@ class Product extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
+    protected $fillable = [
+        'product_name',
+        'product_desc',
+        'product_price',
+        'product_img',
+        'product_cat',
+    ];
+
     public function get_cat_list(){
 
         $query = DB::table('categories')
