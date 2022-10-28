@@ -342,11 +342,15 @@ class CategoryController extends Controller
                 if(empty($row_id)){ //create new item
                     $data_arr += array('created_at' => date('Y-m-d H:i:s'));
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $last_id = $this->category_model->save_cat_details($data_arr); 
+                    $creating_category = Category::create($data_arr);
+                    $last_id = $creating_category->id;
+                    //$last_id = $this->category_model->save_cat_details($data_arr); 
                 }
                 else{
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $last_id = $this->category_model->save_cat_details($data_arr, $row_id);
+                    $last_id = Category::where('id', $row_id)
+                                       ->update($data_arr);
+                    //$last_id = $this->category_model->save_cat_details($data_arr, $row_id);
                 }
                 if(!empty($last_id)){
                     $return_status['status'] = TRUE;
