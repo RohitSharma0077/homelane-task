@@ -362,23 +362,13 @@ class UsersController extends Controller
             
         }
         else{
-            $data_arr = array();
-            $data_arr += array('user_role' => $user_role);
-
-            if(!empty($email)){
-                $data_arr += array('email' => $email);
-            }
-
-            if(!empty($password)){
-                $data_arr += array('password' => bcrypt($password));    // encrypting password
-            }
-
-            if(!empty($first_name)){
-                        $data_arr += array('first_name' => $first_name);
-            }
-            if(!empty($last_name)){
-                $data_arr += array('last_name' => $last_name);
-            }
+            $data_arr = array(
+                'user_role' => $user_role, 
+                'email' => $email, 
+                'password' => bcrypt($password),  // encrypting password
+                'first_name' => $first_name, 
+                'last_name' => $last_name,                    
+            );
             
             if( empty($data_arr) ){
                 $return_status['status'] = FALSE;
@@ -392,7 +382,11 @@ class UsersController extends Controller
                 if(empty($row_id)){ //create new item
                     $data_arr += array('created_at' => date('Y-m-d H:i:s'));
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $last_id = $this->users_model->save_users_details($data_arr);
+                    //dd($request->all());
+                     $creating_user = User::create($data_arr);
+                     $last_id = $creating_user->id;
+                    //$last_id = $this->users_model->save_users_details($data_arr);
+                     //dd($last_id);
                     $user_details = $this->users_model->get_users($last_id);
                     $user_details->txt_password = $password;
                     $genrated_mail = $this->send_mail_user($user_details, "User Added", "Welcome, Your account has been created.Here are your login credentials", );
@@ -400,7 +394,9 @@ class UsersController extends Controller
                 }
                 else{
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $last_id = $this->users_model->save_users_details($data_arr, $row_id);
+                    $last_id = User::where('id', $row_id)
+                                    ->update($data_arr);                
+                    //$last_id = $this->users_model->save_users_details($data_arr, $row_id);
                     $user_details = $this->users_model->get_users($row_id);
                     $user_details->txt_password = $password;
                     $is_updated = 1;
