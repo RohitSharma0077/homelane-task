@@ -91,7 +91,7 @@ class ProductController extends Controller
             ),
             
             array( 
-                "db"=> "products.product_cat" ,
+                "db"=> "products.category_id" ,
                 "dt"=> "product_cat_name" ,
             ),
             array( 
@@ -123,6 +123,9 @@ class ProductController extends Controller
             }
         }
         $login_users_role = Auth::user()->user_role;
+
+        // $get_products = Category::with('products')->find(1);
+        // dd($get_products->toarray());
 
         $filter_arr_clone = $filter_arr;
         $filter_arr_clone['recordsFiltered'] = TRUE;
@@ -168,7 +171,7 @@ class ProductController extends Controller
                     $product_img = '<img src="'.$img.'" id="profile_img_display" width="50" height="50">';
                 }
 
-                $cat_id = $row->product_cat;
+                $cat_id = $row->category_id;
                 $cat_details = $this->category_model->get_cat($cat_id);
 
                 $product_cat_name = '<button type="button" cat-name="'.$cat_details->category_name.'" cat-des="'.$cat_details->category_desc.'" class="btn btn-outline-primary cat_data_load" data-toggle="modal" data-target="#exampleModalCenter">
@@ -196,6 +199,7 @@ class ProductController extends Controller
             "data"            => $data,   // total data array 
             "filter_arr"      => $filter_arr,
         );
+        //dd($return_status);
 
         return response()->json(//Ajax response in json format
             $return_status
@@ -306,14 +310,14 @@ class ProductController extends Controller
         );
 
 
-        $product_cat = $request->product_cat;
+        $category_id = $request->category_id;
         $product_name = $request->product_name;
         $product_desc = $request->product_desc;
         $product_price = $request->product_price;
         $row_id = $request->row_id;
 
         $rules = array(
-            'product_cat' => 'required',
+            'category_id' => 'required',
             'product_desc' => 'required',
             'product_price' => 'required',
             'product_name' => 'required',         
@@ -321,7 +325,7 @@ class ProductController extends Controller
         );
         
         $messages = [
-            'product_cat.required' 		=> 'User Role Required',
+            'category_id.required' 		=> 'User Role Required',
             'product_desc.required' 		=> 'First Name Role Required',
             'product_price.required' 		=> 'Last Name Required',
             'product_name.required' 			=>  'product_name Required',
@@ -345,7 +349,7 @@ class ProductController extends Controller
         }
         else{
             $data_arr = array();
-            $data_arr += array('product_cat' => $product_cat);
+            $data_arr += array('category_id' => $category_id);
             if(!empty($request->product_img)){
                 $result_file = $this->saveFileToFolder($request->file('product_img'));  
                 if($result_file['status'] === TRUE){

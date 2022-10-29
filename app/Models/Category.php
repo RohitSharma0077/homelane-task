@@ -18,6 +18,12 @@ class Category extends Model
         'category_desc',
     ];
 
+
+    public function products()
+    {
+    	return $this->hasMany(Product::class);    // category has many products
+    }
+
     public function get_cat($id = NULL , $filter_arr = array()){ 
         
         if(empty($id)){

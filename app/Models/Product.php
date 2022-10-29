@@ -18,8 +18,13 @@ class Product extends Model
         'product_desc',
         'product_price',
         'product_img',
-        'product_cat',
+        'category_id',
     ];
+
+    public function category()
+    {
+    	return $this->belongsTo(Category::class);
+    }
 
     public function get_cat_list(){
 
@@ -39,11 +44,16 @@ class Product extends Model
         
         if(empty($id)){
 
-            $query = DB::table('products')
-                     ->leftJoin('categories', 'categories.id', '=', 'products.product_cat')
-            ->select(DB::raw('products.id as id, products.product_name as product_name, products.product_desc as product_desc, products.product_price as product_price, products.product_img as product_img, products.product_cat as product_cat, categories.category_name as product_cat_name'))
-            ->where('products.deleted_at', NULL)
-            ->groupBy('products.id');
+            // $query = DB::table('products')
+            //          ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
+            // ->select(DB::raw('products.id as id, products.product_name as product_name, products.product_desc as product_desc, products.product_price as product_price, products.product_img as product_img, products.category_id as category_id, categories.category_name as product_cat_name'))
+            // ->where('products.deleted_at', NULL)
+            // ->groupBy('products.id');
+
+            $query = Product::leftJoin('categories', 'categories.id', '=', 'products.category_id')
+                    ->select(DB::raw('products.id as id, products.product_name as product_name, products.product_desc as product_desc, products.product_price as product_price, products.product_img as product_img, products.category_id as category_id, categories.category_name as product_cat_name'))
+                    ->where('products.deleted_at', NULL)
+                    ->groupBy('products.id');
 
                 if(!empty($filter_arr)){
                 $search_val = $filter_arr['search_val'];

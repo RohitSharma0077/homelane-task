@@ -19,7 +19,7 @@
     	$product_name        = !empty($pd_details->product_name)?$pd_details->product_name: '';
         $product_desc    = !empty($pd_details->product_desc)?$pd_details->product_desc: '';
         $product_price     = !empty($pd_details->product_price)?$pd_details->product_price: '';
-        $product_cat     = !empty($pd_details->product_cat)?$pd_details->product_cat: '';
+        $category_id     = !empty($pd_details->category_id)?$pd_details->category_id: '';
 
         if(!empty($pd_details->product_img)){
 	        $product_img = "/uploads/".$pd_details->product_img;
@@ -68,13 +68,13 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">Category *</label>
-                                                            <select id="product_cat" name="product_cat" class="form-control">
+                                                            <select id="category_id" name="category_id" class="form-control">
                                                                 <option value="">Select</option>
 
                                                                 <?php
                                                                  foreach($get_cat_list as $cat){ 
-                                                                    if(!empty($product_cat)) { ?>
-                                                                    <option value="{{ $cat->id }}" {{ ($cat->id == $product_cat)?    'selected': ' ' }} >
+                                                                    if(!empty($category_id)) { ?>
+                                                                    <option value="{{ $cat->id }}" {{ ($cat->id == $category_id)?    'selected': ' ' }} >
                                                                         {{ $cat->category_name }}
                                                                     </option>    
                                                                       <?php } 
@@ -86,8 +86,8 @@
                                                                     <?php } ?>
                                                                  <?php } ?>
                                                             </select>
-                                                            @if ($errors->has('product_cat'))
-                                                                <small class="form-control-feedback">{{ $errors->first('product_cat') }}</small>
+                                                            @if ($errors->has('category_id'))
+                                                                <small class="form-control-feedback">{{ $errors->first('category_id') }}</small>
                                                             @endif
                                                         </div>
                                                     </div>

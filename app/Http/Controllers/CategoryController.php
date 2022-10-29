@@ -226,10 +226,10 @@ class CategoryController extends Controller
                         $category_row = DB::table('categories')->where('id', '=', $u_id)->first();
 
                         // get products assigned to category
-                        $products_in_cat = DB::table('products')->where('product_cat', '=', $u_id)->get();
+                        $products_in_cat = DB::table('products')->where('category_id', '=', $u_id)->get();
                         if(count($products_in_cat) > 0 && !empty(count($products_in_cat))){
                             // deleting all products assigned to selected category
-                            $pds_deleted = Product::where('product_cat', $u_id)->delete();
+                            $pds_deleted = Product::where('category_id', $u_id)->delete();
 
                         }
                             // deleting selected category

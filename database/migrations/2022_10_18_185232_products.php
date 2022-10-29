@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('product_desc');
             $table->integer('product_price');
             $table->string('product_img')->nullable();
-            $table->bigInteger('product_cat');
+           // $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
