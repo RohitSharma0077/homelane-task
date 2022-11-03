@@ -27,7 +27,7 @@ class superadmin_seeder extends Seeder
         DB::table('users')->insert([
             'first_name' => "SuperAdmin",
             'last_name' => "lname",
-            'user_role' => "1",
+            'role' => "1",
             // 'email' => 'superadmin@gmail.com',
             'email' => Str::random(10).'@gmail.com',
             'password' => Hash::make('password'),

@@ -46,7 +46,7 @@ class ProductController extends Controller
             'url' =>  ''),
             
         );
-        $login_users_role = Auth::user()->user_role;
+        $login_users_role = Auth::user()->role;
         if($login_users_role == 1 || $login_users_role == 3){
             $action_col_chk = 'have_access';
         }
@@ -122,7 +122,7 @@ class ProductController extends Controller
                 );
             }
         }
-        $login_users_role = Auth::user()->user_role;
+        $login_users_role = Auth::user()->role;
 
         // $get_products = Category::with('products')->find(1);
         // dd($get_products->toarray());
@@ -158,7 +158,7 @@ class ProductController extends Controller
                                 '</a>';
 
                 // Sales team can view/access the products 
-                // 1=SuperAdmin, 2= UserAdmin, 3=SalesTeam
+                // 1=SuperAdmin, 2= Admin, 3=SalesTeam
                 if($login_users_role == 1 || $login_users_role == 3){
                     $action_col_chk = $action_str;
                 }

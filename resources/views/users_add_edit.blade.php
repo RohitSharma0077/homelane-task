@@ -18,7 +18,7 @@
     }
 
 	if (empty($user_details)){
-		$user_role 	  = old('user_role');
+		$role 	  = old('role');
 		$email        = old('email');
         $first_name   = old('first_name');
         $last_name    = old('last_name');
@@ -26,7 +26,7 @@
     }
     else{
     
-    	$user_role 	   = !empty($user_details->user_role)?$user_details->user_role: '';
+    	$role 	   = !empty($user_details->role)?$user_details->role: '';
     	$email        = !empty($user_details->email)?$user_details->email: '';
         $first_name    = !empty($user_details->first_name)?$user_details->first_name: '';
         $last_name     = !empty($user_details->last_name)?$user_details->last_name: '';
@@ -69,21 +69,21 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">User Role *</label>
-                                                            <select id="user_role" name="user_role" class="form-control">
+                                                            <select id="role" name="role" class="form-control">
                                                                 <option value="">Select</option>
                                                             
-                                                                <!-- <option value="{{ config('constants.ROLES.SUPER')}}" {{ (config('constants.ROLES.SUPER') == $user_role)? 'selected': ' ' }} >
+                                                                <!-- <option value="{{ config('constants.ROLES.SUPER')}}" {{ (config('constants.ROLES.SUPER') == $role)? 'selected': ' ' }} >
                                                                     {{ config('constants.REVERSAL_ROLES.SUPER') }}
                                                                 </option> -->
-                                                                <option value="{{ config('constants.ROLES.ADMIN')}}" {{ (config('constants.ROLES.ADMIN') == $user_role)? 'selected': ' ' }} >
+                                                                <option value="{{ config('constants.ROLES.ADMIN')}}" {{ (config('constants.ROLES.ADMIN') == $role)? 'selected': ' ' }} >
                                                                     {{ config('constants.REVERSAL_ROLES.ADMIN') }}
                                                                 </option>
-                                                                <option value="{{ config('constants.ROLES.SALES')}}" {{ (config('constants.ROLES.SALES') == $user_role)? 'selected': ' ' }} >
+                                                                <option value="{{ config('constants.ROLES.SALES')}}" {{ (config('constants.ROLES.SALES') == $role)? 'selected': ' ' }} >
                                                                     {{ config('constants.REVERSAL_ROLES.SALES') }}
                                                                 </option>
                                                             </select>
-                                                            @if ($errors->has('user_role'))
-                                                                <small class="form-control-feedback">{{ $errors->first('user_role') }}</small>
+                                                            @if ($errors->has('role'))
+                                                                <small class="form-control-feedback">{{ $errors->first('role') }}</small>
                                                             @endif
                                                         </div>
                                                     </div>

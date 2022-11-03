@@ -18,7 +18,7 @@ class RoleCheckSales
     public function handle(Request $request, Closure $next)
     {
        // return $next($request);
-        if ((Auth::user() && Auth::user()->user_role == config('constants.ROLES.SUPER')) || (Auth::user() && Auth::user()->user_role == config('constants.ROLES.SALES'))) {
+        if ((Auth::user() && Auth::user()->role == config('constants.ROLES.SUPER')) || (Auth::user() && Auth::user()->role == config('constants.ROLES.SALES'))) {
 
             return $next($request);
 

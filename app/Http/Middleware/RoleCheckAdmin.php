@@ -19,7 +19,7 @@ class RoleCheckAdmin
     {
        // return $next($request);
 
-        if ( Auth::user() && Auth::user()->user_role == config('constants.ROLES.ADMIN') ) {
+        if ( Auth::user() && Auth::user()->role == config('constants.ROLES.ADMIN') ) {
 
             return $next($request);
 

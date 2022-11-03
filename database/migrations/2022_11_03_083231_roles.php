@@ -13,16 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->bigInteger('role')->unsigned()->comment("Default Roles are SuperAdmin, Admin, SubAdmin,Executive, Associate");
-            //$table->foreign('role')->references('id')->on('roles')->onDelete('cascade');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('name');
+            $table->string('role_values')->nullable()->comment("Role values are comma separated values of Menu IDs");
             $table->timestamp('created_on')->nullable();
             $table->string('created_by')->nullable();
             $table->timestamp('modified_on')->nullable();
@@ -40,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('roles');
     }
 };

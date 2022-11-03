@@ -46,7 +46,7 @@ class CategoryController extends Controller
             'url' =>  ''),
             
         );
-        $login_users_role = Auth::user()->user_role;
+        $login_users_role = Auth::user()->role;
         if($login_users_role == 1 || $login_users_role == 3){
             $action_col_chk = 'have_access';
         }
@@ -113,7 +113,7 @@ class CategoryController extends Controller
                 );
             }
         }
-        $login_users_role = Auth::user()->user_role;
+        $login_users_role = Auth::user()->role;
 
         $filter_arr_clone = $filter_arr;
         $filter_arr_clone['recordsFiltered'] = TRUE;
@@ -147,7 +147,7 @@ class CategoryController extends Controller
                                 '</a>';
 
                 // Sales team access/view the categories 
-                // 1=SuperAdmin, 2= UserAdmin, 3=SalesTeam
+                // 1=SuperAdmin, 2= Admin, 3=SalesTeam
                 if($login_users_role == 1 || $login_users_role == 3){
                     $action_col_chk = $action_str;
                 }

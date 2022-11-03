@@ -15,9 +15,9 @@ class UsersExport implements FromCollection, WithHeadings
     public function collection()
     {
         //return User::all();
-        //return User::select("id", "first_name", "last_name","user_role", "email", "created_at")->get();
+        //return User::select("id", "first_name", "last_name","role", "email", "created_at")->get();
 
-        return DB::table('users')->select(DB::raw('id, first_name, last_name,(CASE WHEN user_role = 1 THEN "Super Admin" WHEN user_role = 2 THEN "User Admin" WHEN user_role = 3 THEN "Sales Team" ELSE "" END) as user_role, email, created_at'))->get();
+        return DB::table('users')->select(DB::raw('id, first_name, last_name,(CASE WHEN role = 1 THEN "Super Admin" WHEN role = 2 THEN "User Admin" WHEN role = 3 THEN "Sales Team" ELSE "" END) as role, email, created_at'))->get();
     }
 
      /**

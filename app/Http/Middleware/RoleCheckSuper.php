@@ -19,7 +19,7 @@ class RoleCheckSuper
     {
        // return $next($request);
 
-        if ( Auth::user() && Auth::user()->user_role == config('constants.ROLES.SUPER') ) {
+        if ( Auth::user() && Auth::user()->role == config('constants.ROLES.SUPER') ) {
 
             return $next($request);
 

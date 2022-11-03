@@ -45,7 +45,7 @@ class UsersController extends Controller
 			'url' =>  ''),
 			
 		);
-        $login_users_role = Auth::user()->user_role;
+        $login_users_role = Auth::user()->role;
         if($login_users_role == 1 || $login_users_role == 2){
             $action_col_chk = 'have_access';
         }
@@ -90,8 +90,8 @@ class UsersController extends Controller
             ),
            
             array( 
-                "db"=> "users.user_role" ,
-                "dt"=> "user_role" ,
+                "db"=> "users.role" ,
+                "dt"=> "role" ,
             ),
             array( 
                 "db"=> "action" ,
@@ -121,7 +121,7 @@ class UsersController extends Controller
                 );
             }
         }
-        $login_users_role = Auth::user()->user_role;
+        $login_users_role = Auth::user()->role;
 
         $filter_arr_clone = $filter_arr;
         $filter_arr_clone['recordsFiltered'] = TRUE;
@@ -150,19 +150,19 @@ class UsersController extends Controller
 
                 $action_str = ' <a class="edit_user_details" href="'.route('edit_user_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
 
-                $action_str .= ' <a class="delete_user text text-danger" u-role="'.$row->user_role.'" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
+                $action_str .= ' <a class="delete_user text text-danger" u-role="'.$row->role.'" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
 
                 // Sales team only view the users 
-                // 1=SuperAdmin, 2= UserAdmin, 3=SalesTeam
+                // 1=SuperAdmin, 2= Admin, 3=SalesTeam
                 if($login_users_role == 1 || $login_users_role == 2){
                     $action_col_chk = $action_str;
                 }
                 else{
                     $action_col_chk = 'No Access';
                 }
-                switch($row->user_role){
+                switch($row->role){
                     case '1':
                         $u_role = 'Super Admin';
                     break;
@@ -182,7 +182,7 @@ class UsersController extends Controller
                     'email'  => e(!empty($row->email)? $row->email:''),
                     'first_name'  => e(!empty($row->first_name)? $row->first_name:''),
                     'last_name'  => e(!empty($row->last_name)? $row->last_name:''),
-                    'user_role'  => $u_role,
+                    'role'  => $u_role,
                     'action'    =>	$action_col_chk
                 );
         	}
@@ -277,7 +277,7 @@ class UsersController extends Controller
             $breadcrumbs[] = array('name' => 'Edit User',
             'url' => '');  
             $user_details = $this->users_model->get_users($id);
-            $user_role = $user_details->user_role; 
+            $role = $user_details->role; 
         }
         else{
             $breadcrumbs[] = array('name' => 'Add User',
@@ -303,7 +303,7 @@ class UsersController extends Controller
         );
 
 
-        $user_role = $request->user_role;
+        $role = $request->role;
         $email = $request->email;
         $password = $request->password;
         $first_name = $request->first_name;
@@ -311,7 +311,7 @@ class UsersController extends Controller
         $row_id = $request->row_id;
 
         $rules = array(
-            'user_role' => 'required',
+            'role' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'email'     => [
@@ -326,7 +326,7 @@ class UsersController extends Controller
         );
         
         $messages = [
-            'user_role.required' 		=> 'User Role Required',
+            'role.required' 		=> 'User Role Required',
             'first_name.required' 		=> 'First Name Role Required',
             'last_name.required' 		=> 'Last Name Required',
             'email.required' 			=>  'Email Required',
@@ -363,7 +363,7 @@ class UsersController extends Controller
         }
         else{
             $data_arr = array(
-                'user_role' => $user_role, 
+                'role' => $role, 
                 'email' => $email, 
                 'password' => bcrypt($password),
                 'first_name' => $first_name, 
@@ -440,7 +440,7 @@ class UsersController extends Controller
         $m_sub = $sub;
         $m_msg = '';
 
-        switch($u_details->user_role){
+        switch($u_details->role){
             case '1':
                 $u_role = 'Super Admin';
             break;

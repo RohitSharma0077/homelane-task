@@ -28,7 +28,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
-        'user_role',
+        'role',
     ];
 
     /**
@@ -56,7 +56,7 @@ class User extends Authenticatable
         if(empty($id)){
 
             $query = DB::table('users')
-            ->select(DB::raw('users.id as id,users.first_name as first_name, users.last_name as last_name, users.email as email, users.user_role as user_role,CONCAT(COALESCE(users.first_name," ")," ", COALESCE(users.last_name," ")) AS users_full_name'))
+            ->select(DB::raw('users.id as id,users.first_name as first_name, users.last_name as last_name, users.email as email, users.role as role,CONCAT(COALESCE(users.first_name," ")," ", COALESCE(users.last_name," ")) AS users_full_name'))
             ->where('deleted_at', NULL)
             ->groupBy('users.id');
 
@@ -67,7 +67,7 @@ class User extends Authenticatable
                     $havingStr = '( 
                                     first_name like "%' . $search_val . '%" OR
                                     last_name like "%' . $search_val . '%" OR
-                                    user_role like "%' . $search_val . '%" OR
+                                    role like "%' . $search_val . '%" OR
                                     email like "%' . $search_val . '%"         
                                 )';
                     $query->havingRaw($havingStr);

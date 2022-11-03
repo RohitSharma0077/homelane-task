@@ -73,7 +73,7 @@
 	        	{ "data": "first_name"},
                 { "data": "last_name"},
 				{ "data": "email"},
-				{ "data": "user_role"},
+				{ "data": "role"},
 	            { "data": "action", orderable: false, searchable: false  }
 	        ]
 		});
