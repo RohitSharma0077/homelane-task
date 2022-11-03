@@ -3,18 +3,18 @@
 
 <?php
 
-	$req_cat_name     = 'required';
-    $req_cat_desc     = 'required';
+	$req_menu_name     = 'required';
+    $req_menu_URL     = 'required';
 
-	if (empty($cat_details)){
-        $category_name   = old('category_name');
-        $category_desc    = old('category_desc');
+	if (empty($menu_details)){
+        $menu_name   = old('menu_name');
+        $menu_URL    = old('menu_URL');
 
     }
     else{
     
-        $category_name    = !empty($cat_details->category_name)?$cat_details->category_name: '';
-        $category_desc     = !empty($cat_details->category_desc)?$cat_details->category_desc: '';
+        $menu_name    = !empty($menu_details->menu_name)?$menu_details->menu_name: '';
+        $menu_URL     = !empty($menu_details->menu_URL)?$menu_details->menu_URL: '';
     }
 ?>
 <div class="content-wrapper">
@@ -38,7 +38,7 @@
                                 <h4 class="m-b-0">{{ $heading }}</h4>
                             </div>
                             <div class="card-body m-t-20">
-                                <form class="form-horizontal bv-form" role="form" id="add_cat_details_form" enctype="multipart/form-data">
+                                <form class="form-horizontal bv-form" role="form" id="add_menu_details_form" enctype="multipart/form-data">
                                     {{ csrf_field() }}
                                         <div class="form-actions">
                                             <div class="form-body">
@@ -50,21 +50,19 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="hv_field admin_field display_none form-group">
-                                                            <label class="control-label">Category Name*</label>
-                                                            <input type="text" id="category_name" name="category_name" class="form-control" placeholder=" Category Name" {{ $req_cat_name }} value = "{{ $category_name }}" >
-                                                            @if ($errors->has('category_name'))
-                                                                <small class="form-control-feedback">{{ $errors->first('category_name') }}</small>
+                                                            <label class="control-label">Menu Name*</label>
+                                                            <input type="text" id="menu_name" name="menu_name" class="form-control" placeholder=" Menu Name" {{ $req_menu_name }} value = "{{ $menu_name }}" >
+                                                            @if ($errors->has('menu_name'))
+                                                                <small class="form-control-feedback">{{ $errors->first('menu_name') }}</small>
                                                             @endif
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="hv_field admin_field display_none form-group">
-                                                            <label class="control-label">Category Description *</label>
-                                                            <!-- <input type="textarea" id="category_desc" name="category_desc" class="form-control" placeholder=" Category Description" {{ $req_cat_desc }} value = "{{ $category_desc }}" > -->
-
-                                                            <textarea placeholder=" Category Description" {{ $req_cat_desc }} id="category_desc" name="category_desc" rows="4" cols="50" maxlength="200">{{ $category_desc }}</textarea>
-                                                            @if ($errors->has('category_desc'))
-                                                                <small class="form-control-feedback">{{ $errors->first('category_desc') }}</small>
+                                                            <label class="control-label">Menu URL *</label>
+                                                            <input type="url" id="menu_URL" name="menu_URL" class="form-control" placeholder=" Menu URL" {{ $req_menu_URL }} value = "{{ $menu_URL }}" >
+                                                            @if ($errors->has('menu_URL'))
+                                                                <small class="form-control-feedback">{{ $errors->first('menu_URL') }}</small>
                                                             @endif
                                                         </div>
                                                     </div>
@@ -99,7 +97,7 @@
 
 <script>
 	$(function(){
-		$('#add_cat_details_form')
+		$('#add_menu_details_form')
         .bootstrapValidator({
             excluded: ':disabled',
             message: 'This value is not valid',
@@ -110,7 +108,7 @@
             },
             fields: {
 
-                category_name: {
+                menu_name: {
                     validators: {
                         notEmpty :{
                             message: 'Enter Name'
@@ -118,7 +116,7 @@
                     }
                 },
 
-                category_desc: {
+                menu_URL: {
                     validators: {
                         notEmpty :{
                             message: 'Enter description'
@@ -141,13 +139,13 @@
             // Get the BootstrapValidator instance
             var bv = $form.data('bootstrapValidator');
             // Use Ajax to submit form data
-			var formData = new FormData($("#add_cat_details_form")[0]);
+			var formData = new FormData($("#add_menu_details_form")[0]);
 			// console.log(formData);
 			$(".pre-loader").show();
             var type = "POST"; //for creating new resource
             $.ajax({
                 type: type,
-                url:  "{{ route('save_cat_details') }}",
+                url:  "{{ route('save_menu_details') }}",
                 data: formData,
 				contentType: false,
 				dataType: "json",	
@@ -158,7 +156,7 @@
                 },
                 success: function (result) {
                     if(result.status){
-                        showSweetAlertMessage(result.status,result.message, "{{ route('cat_view') }}");
+                        showSweetAlertMessage(result.status,result.message, "{{ route('menu_view') }}");
 					}else{
 						showSweetAlertMessage(result.status,result.message);
 						$("#submit_button_user").attr('disabled',false);
@@ -179,9 +177,9 @@
             });
         })
 
-        $('#add_cat_details_form').data('bootstrapValidator').resetForm();
+        $('#add_menu_details_form').data('bootstrapValidator').resetForm();
 
-		// $('#add_cat_details_form').validator('update');
+		// $('#add_menu_details_form').validator('update');
 		$("#submit_button_user").attr('disabled',false);
 
 	});

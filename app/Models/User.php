@@ -17,6 +17,7 @@ class User extends Authenticatable
     use SoftDeletes;
     protected $table = 'users';
     protected $dates = ['deleted_at'];
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -99,11 +100,11 @@ class User extends Authenticatable
                             $query->orderBy($sort_column, $sort_by);
                         }
                         else{
-                            $query->orderBy('created_at','desc');
+                            $query->orderBy('created_on','desc');
                         }
                     }
                     else{
-                        $query->orderBy('created_at','desc');
+                        $query->orderBy('created_on','desc');
                     }
 
                     //sort close

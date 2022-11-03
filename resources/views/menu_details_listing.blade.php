@@ -11,16 +11,16 @@
             <div class="col-12">
             <div class="card">
                 <div class="card-header text-right">
-                     <a class="btn btn-success" href="{{ route('edit_cat_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
+                     <a class="btn btn-success" href="{{ route('edit_menu_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                <table id="cat_datatable_table" class="table table-bordered table-striped" style="width: 100%;">
+                <table id="menu_datatable_table" class="table table-bordered table-striped" style="width: 100%;">
                     <thead>
                         <tr>
                             <th><input type="checkbox" name="select_all" value="1" class="select_all_checkbox" id="select-all-checkbox"></th>
-                            <th>Category Name</th>
-                            <th>Category Description</th>
+                            <th>Menu Name</th>
+                            <th>Menu URL</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -46,13 +46,13 @@
 	var oTable;
 	$(function() {
 		var rows_selected = [];
-		oTable = $('#cat_datatable_table').DataTable({
+		oTable = $('#menu_datatable_table').DataTable({
 			responsive:true,
 			"order": [[1, 'desc']], //By default, order by descending 1st column
 	        "processing": true,
 	        "serverSide": true,
 	        "ajax": {
-	        	url: "{{ route('cat_ajax_list') }}",
+	        	url: "{{ route('menu_ajax_list') }}",
 	        	"dataType":"json",
 				
 	    	},
@@ -65,8 +65,8 @@
 		    },
 	        "columns": [
 	        	{ "data": "checkbox", orderable: false, searchable: false},
-	        	{ "data": "category_name"},
-                { "data": "category_desc"},
+	        	{ "data": "menu_name"},
+                { "data": "menu_URL"},
 	            { "data": "action", orderable: false, searchable: false  }
 	        ]
 		});
@@ -75,7 +75,7 @@
 		// 	oTable.ajax.reload();
 		// });
 		// Handle click on checkbox
-        $('#cat_datatable_table tbody').on('click', 'input[type="checkbox"]', function(e){
+        $('#menu_datatable_table tbody').on('click', 'input[type="checkbox"]', function(e){
           var $row = $(this).closest('tr');
           
           // Get row data
@@ -111,16 +111,16 @@
         });
 
         // Handle click on table cells with checkboxes
-        $('#cat_datatable_table').on('click', 'tbody td, thead th:first-child', function(e){
+        $('#menu_datatable_table').on('click', 'tbody td, thead th:first-child', function(e){
           // $(this).parent().find('input[type="checkbox"]').trigger('click');
         });
 
         // Handle click on "Select all" control
         $('thead input[name="select_all"]', oTable.table().container()).on('click', function(e){
           if(this.checked){
-             $('#cat_datatable_table tbody input[type="checkbox"]:not(:checked)').trigger('click');
+             $('#menu_datatable_table tbody input[type="checkbox"]:not(:checked)').trigger('click');
           } else {
-             $('#cat_datatable_table tbody input[type="checkbox"]:checked').trigger('click');
+             $('#menu_datatable_table tbody input[type="checkbox"]:checked').trigger('click');
           }
 
           // Prevent click event from propagating to parent
@@ -130,19 +130,14 @@
 
 
 //Delete user
-$(document).on('click', '.delete_cat', function() {
+$(document).on('click', '.delete_menu', function() {
     var u_id = $(this).attr("data-uid");
-    var u_role = $(this).attr("u-role");
-    if(u_role == 1){ // super admin cannot be deleted by anyone
-        alert('Super Admin cannot be delete. Contact Administrator !!!');
-    }
-    else{
-        if(confirm("Category may have products in it. Do you really want to delete this category?")){
+        if(confirm("Menu may assigned to some role(s). Do you really want to delete this menu?")){
             $this = $(this);
             $this.prop("disabled", true);
             $.ajax({
                 type: "POST",
-                url: "{{ route('delete_cat') }}",
+                url: "{{ route('delete_menu') }}",
                 data: {'u_id': u_id },
                 headers: {
                     // 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -154,6 +149,11 @@ $(document).on('click', '.delete_cat', function() {
                     if(result.status == true){
                         oTable.draw();
                         showSweetAlertMessage(result.status,result.message);
+                           setTimeout(function(){ 
+                                window.location.reload();
+                                //$('#pg_load_success_menu').load(location.href + " #pg_load_success_menu"); 
+							 },1500);
+                      
 
                     
                     }
@@ -176,7 +176,6 @@ $(document).on('click', '.delete_cat', function() {
                 }
             });
         }
-    }
     
 });
 //Delete user close

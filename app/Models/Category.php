@@ -24,7 +24,7 @@ class Category extends Model
     	return $this->hasMany(Product::class);    // category has many products
     }
 
-    public function get_cat($id = NULL , $filter_arr = array()){ 
+    public function get_menu($id = NULL , $filter_arr = array()){ 
         
         if(empty($id)){
 
@@ -98,7 +98,7 @@ class Category extends Model
         return $result;
     }
 
-    public function save_cat_details($data, $id=NULL){
+    public function save_menu_details($data, $id=NULL){
 
         if(empty($data)){
             return FALSE;

@@ -3,7 +3,7 @@
   $menu_ids_arr = explode(",", $assigned_menu_ids);
   $menu_details = getUrlsWithMenuIds($menu_ids_arr);
   // $getRouteSlugs = getAllRouteSlugs();
-  // dd($getRouteSlugs);
+  // dd($menu_details);
 
   ?>
   
@@ -54,7 +54,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ route('menu_view') }}" class="nav-link">
               <i class="nav-icon fas fa-list-alt"></i>
               <p>
                 Menu Master
@@ -63,7 +63,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ route('role_view') }}" class="nav-link">
                 <i class="nav-icon fas fas fa-users"></i>
               <p>
                 Role Master
@@ -82,7 +82,7 @@
           </li>
       
           <!-- menu dynamic list starts -->
-          <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="user-panel mt-3 pb-3 mb-3 d-flex" id = "pg_load_success_menu">
             <div class="image">
               <i style="color:#c2c7d0; padding: 10px 10px 10px;" class="nav-icon fas fa-bars"></i>
             </div>

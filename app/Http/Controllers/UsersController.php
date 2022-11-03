@@ -46,7 +46,7 @@ class UsersController extends Controller
 			
 		);
         $login_users_role = Auth::user()->role;
-        if($login_users_role == 1 || $login_users_role == 2){
+        if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
             $action_col_chk = 'have_access';
         }
         else{
@@ -122,6 +122,7 @@ class UsersController extends Controller
             }
         }
         $login_users_role = Auth::user()->role;
+        $login_users_id = Auth::user()->id;
 
         $filter_arr_clone = $filter_arr;
         $filter_arr_clone['recordsFiltered'] = TRUE;
@@ -150,12 +151,12 @@ class UsersController extends Controller
 
                 $action_str = ' <a class="edit_user_details" href="'.route('edit_user_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
 
-                $action_str .= ' <a class="delete_user text text-danger" u-role="'.$row->role.'" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
+                $action_str .= ' <a class="delete_user text text-danger" login-user-id="'.$login_users_id.'" u-role="'.$row->role.'" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
 
                 // 1=SuperAdmin, 2= Admin
-                if($login_users_role == 1 || $login_users_role == 2){
+                if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
                     $action_col_chk = $action_str;
                 }
                 else{
@@ -374,19 +375,19 @@ class UsersController extends Controller
               
                 if(empty($row_id)){ //create new item
                     $data_arr += array('created_on' => date('Y-m-d H:i:s'));
-                    $data_arr += array('created_by' => $login_user_fullname.'-'. $login_user_role);
-                    // $creating_user = User::create($data_arr);    // query checks for created_at column automatically
-                    // $last_id = $creating_user->id;
+                    $data_arr += array('created_by' => $login_user_fullname.':'. $login_user_role);
+                  //  $creating_user = User::create($data_arr);    // query checks for created_at column automatically
+                   // $last_id = $creating_user->id;
                     $last_id = $this->users_model->save_users_details($data_arr);
                    
                    
                 }
                 else{
                     $data_arr += array('modified_on' => date('Y-m-d H:i:s'));
-                    $data_arr += array('modified_by' => $login_user_fullname.'-'. $login_user_role);
-                    // $last_id = User::where('id', $row_id)      // query checks for updated_at column automatically
-                    //                 ->update($data_arr);                
-                    $last_id = $this->users_model->save_users_details($data_arr, $row_id);
+                    $data_arr += array('modified_by' => $login_user_fullname.':'. $login_user_role);
+                     $last_id = User::where('id', $row_id)      // query checks for updated_at column automatically
+                                     ->update($data_arr);                
+                    //$last_id = $this->users_model->save_users_details($data_arr, $row_id);
                   
                 }
 
@@ -398,85 +399,5 @@ class UsersController extends Controller
             }            
         }
         return response()->json($return_status);
-    }
-
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-    // public function export() 
-    // {
-    //     return Excel::download(new UsersExport, 'users.xlsx');
-    // }
-        
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-    // public function import() 
-    // {
-    //     Excel::import(new UsersImport,request()->file('file'));
-                
-    //     return back();
-    // }
-
-    public function send_mail_user($user_details = NULL, $sub = NULL, $msg= NULL, $is_updated = NULL)
-    {
-        //dd($user_details);
-        $u_details = $user_details;
-        $to_email = 'r_test007@yopmail.com';       
-        $m_sub = $sub;
-        $m_msg = '';
-
-        switch($u_details->role){
-            case '1':
-                $u_role = 'Super Admin';
-            break;
-            case '2':
-                $u_role = 'User Admin';
-            break;
-            case '3':
-                $u_role = 'Sales Team';
-            break;
-        }
-
-        if(!empty($is_updated)){
-            $m_msg = '<div>
-            <h3>Here are updated User details</h3>
-            <ul>
-            <li>ID : '.$u_details->id.' </li>
-            <li>First Name : '.$u_details->first_name.' </li>
-            <li>Last Name : '.$u_details->last_name.' </li>
-            <li>User Role : '.$u_role.' </li>
-            <li>Email : '.$u_details->email.' </li>
-            <li>Password : '.$u_details->txt_password.' </li>
-            <br><br>
-            </ul> 
-            </<div>';
-        }
-        else{
-
-            $m_msg = '<div>
-            <h3>Welcome, Your account has been created.<br>
-            Here are your login credentials</h3>
-            <ul>
-            <li>Email : '.$u_details->email.' </li>
-            <li>Password : '.$u_details->txt_password.' </li>
-            <br><br>
-            </ul> 
-            </<div>';
-
-        }
-       
-
-         $mail_data = [
-             'm_sub' => $m_sub,
-             'm_msg' => $m_msg,
-         ];
-        $sendInvoiceMail = Mail::to($to_email);
-        $sendInvoiceMail->send(new EmailSend($mail_data));
-  
-   
-        return response()->json([
-            'message' => 'Email has been sent.'
-        ], Response::HTTP_OK);
     }
 }

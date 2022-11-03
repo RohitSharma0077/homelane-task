@@ -14,7 +14,6 @@
                     @if(getLoggedInUserRole() != config('constants.ROLES.SALES'))
                       <a class="btn btn-success" href="{{ route('edit_user_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
                     @endif
-                     <a class="btn btn-info" href="{{ route('users.export') }}"><i class="fa fa-file"></i> Export</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -140,7 +139,11 @@
 $(document).on('click', '.delete_user', function() {
     var u_id = $(this).attr("data-uid");
     var u_role = $(this).attr("u-role");
-    if(u_role == 1){ // super admin cannot be deleted by anyone
+    var login_user_id = $(this).attr("login-user-id");
+    if(u_id == login_user_id){ // user cannot be deleted by himself
+        alert('You cannot delete yourself. Contact Administrator !!!');
+    }
+    else if(u_role == 1){ // super admin cannot be deleted by anyone
         alert('Super Admin cannot be delete. Contact Administrator !!!');
     }
     else{

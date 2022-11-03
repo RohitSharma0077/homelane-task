@@ -40,7 +40,7 @@
               <div class="icon">
                 <i class="ion ion-android-menu"></i>
               </div>
-              <a href="{{ route('users_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('menu_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -55,7 +55,7 @@
               <div class="icon">
                 <i class="ion ion-android-contacts"></i>
               </div>
-              <a href="{{ route('cat_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('role_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -70,7 +70,7 @@
               <div class="icon">
                   <i class="ion ion-person-add"></i>
               </div>
-              <a href="{{ route('pd_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('users_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>

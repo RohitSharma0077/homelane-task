@@ -11,19 +11,16 @@
             <div class="col-12">
             <div class="card">
                 <div class="card-header text-right">
-                     <a class="btn btn-success" href="{{ route('edit_pd_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
+                     <a class="btn btn-success" href="{{ route('edit_role_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                <table id="pd_datatable_table" class="table table-bordered table-striped" style="width: 100%;">
+                <table id="role_datatable_table" class="table table-bordered table-striped" style="width: 100%;">
                     <thead>
                         <tr>
                             <th><input type="checkbox" name="select_all" value="1" class="select_all_checkbox" id="select-all-checkbox"></th>
-                            <th>Product Name</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Product Category</th>
-                            <th>Image</th>
+                            <th>Role Name</th>
+                            <th>Assigned Menu(s)</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -49,13 +46,13 @@
 	var oTable;
 	$(function() {
 		var rows_selected = [];
-		oTable = $('#pd_datatable_table').DataTable({
+		oTable = $('#role_datatable_table').DataTable({
 			responsive:true,
 			"order": [[1, 'desc']], //By default, order by descending 1st column
 	        "processing": true,
 	        "serverSide": true,
 	        "ajax": {
-	        	url: "{{ route('pd_ajax_list') }}",
+	        	url: "{{ route('role_ajax_list') }}",
 	        	"dataType":"json",
 				
 	    	},
@@ -68,11 +65,8 @@
 		    },
 	        "columns": [
 	        	{ "data": "checkbox", orderable: false, searchable: false},
-	        	{ "data": "product_name"},
-                { "data": "product_desc"},
-				{ "data": "product_price"},
-				{ "data": "product_cat_name", orderable: false, searchable: false},
-                { "data": "product_img", orderable: false, searchable: false},
+	        	{ "data": "name"},
+                { "data": "role_values", orderable: false, searchable: false },
 	            { "data": "action", orderable: false, searchable: false  }
 	        ]
 		});
@@ -81,7 +75,7 @@
 		// 	oTable.ajax.reload();
 		// });
 		// Handle click on checkbox
-        $('#pd_datatable_table tbody').on('click', 'input[type="checkbox"]', function(e){
+        $('#role_datatable_table tbody').on('click', 'input[type="checkbox"]', function(e){
           var $row = $(this).closest('tr');
           
           // Get row data
@@ -117,16 +111,16 @@
         });
 
         // Handle click on table cells with checkboxes
-        $('#pd_datatable_table').on('click', 'tbody td, thead th:first-child', function(e){
+        $('#role_datatable_table').on('click', 'tbody td, thead th:first-child', function(e){
           // $(this).parent().find('input[type="checkbox"]').trigger('click');
         });
 
         // Handle click on "Select all" control
         $('thead input[name="select_all"]', oTable.table().container()).on('click', function(e){
           if(this.checked){
-             $('#pd_datatable_table tbody input[type="checkbox"]:not(:checked)').trigger('click');
+             $('#role_datatable_table tbody input[type="checkbox"]:not(:checked)').trigger('click');
           } else {
-             $('#pd_datatable_table tbody input[type="checkbox"]:checked').trigger('click');
+             $('#role_datatable_table tbody input[type="checkbox"]:checked').trigger('click');
           }
 
           // Prevent click event from propagating to parent
@@ -135,20 +129,16 @@
 });	
 
 
-//Delete user
-$(document).on('click', '.delete_pd', function() {
+//Delete role
+$(document).on('click', '.delete_role', function() {
     var u_id = $(this).attr("data-uid");
-    var u_role = $(this).attr("u-role");
-    if(u_role == 1){ // super admin cannot be deleted by anyone
-        alert('Super Admin cannot be delete. Contact Administrator !!!');
-    }
-    else{
-        if(confirm("Do you really want to delete this product?")){
+
+        if(confirm("This role may have users assigned to it. Do you really want to delete this role?")){
             $this = $(this);
             $this.prop("disabled", true);
             $.ajax({
                 type: "POST",
-                url: "{{ route('delete_pd') }}",
+                url: "{{ route('delete_role') }}",
                 data: {'u_id': u_id },
                 headers: {
                     // 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -182,47 +172,11 @@ $(document).on('click', '.delete_pd', function() {
                 }
             });
         }
-    }
+
     
 });
-//Delete user close
-
-$(document).on('click', '.cat_data_load', function() {
-    var cat_nm = $(this).attr("cat-name");
-    var cat_des = $(this).attr("cat-des");
-    var text ='<h5>Name: '+cat_nm+' </h5><h5>Description: '+cat_des+' </h5>';
-    $( "#cat_dataid" ).append( text );
-});
-
-$(document).on('click', '.cls_modal', function() {
-    $("#cat_dataid").val('');
-    $("#cat_dataid").text('');
-    $("#cat_dataid").empty();
-    $("#cat_dataid").val('False');
-});
+//Delete role close
 
 </script>
-
-
-
- <!-- Modal -->
- <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalCenterTitle">Category details</h5>
-            <button type="button" class="close cls_modal" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div id="cat_dataid"> </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary cls_modal" data-dismiss="modal">Close</button>
-        </div>
-        </div>
-    </div>
-</div>
 
 @endsection

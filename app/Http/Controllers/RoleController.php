@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Product;
-use App\Models\Category;
+use App\Models\Role;
+use App\Models\Menu;
 use Validator;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailSend;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProductController extends Controller
+class RoleController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -29,45 +29,45 @@ class ProductController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->product_model = new \App\Models\Product;
+        $this->role_model = new \App\Models\Role;
 		$this->users_model = new \App\Models\User;
-		$this->category_model = new \App\Models\Category;
+		$this->menu_model = new \App\Models\Menu;
         $this->offset = config('constants.DEFAULT_OFFSET');
         $this->limit = config('constants.DEFAULT_LIMIT');
     }
 
-    // Products controller methods
-    public function PdView()
+    // Role controller methods
+    public function RoleView()
     {
         $breadcrumbs = array(
             array('name' => 'Home',
             'url' => route('home')),
-            array('name' => 'Products',
+            array('name' => 'Role',
             'url' =>  ''),
             
         );
         $login_users_role = Auth::user()->role;
-        if($login_users_role == 1 || $login_users_role == 3){
+        if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
             $action_col_chk = 'have_access';
         }
         else{
             $action_col_chk = '';
         }
         $data = [
-            'page_title' 	 => 'Products List',
+            'page_title' 	 => 'Roles List',
             'active_sidebar' => '',
             'action_col_chk' => $action_col_chk,
             'breadcrumbs' => $breadcrumbs,
-            "heading" => 'Products',
+            "heading" => 'Roles',
 
         ];
         //dd($data);
         
-        return view('products_details_listing', $data);
+        return view('role_details_listing', $data);
         
     }
 
-    public function PdAjaxList (Request $request){
+    public function RoleAjaxList (Request $request){
 
         $columns = array(
 
@@ -77,22 +77,13 @@ class ProductController extends Controller
             ),
 
             array( 
-                "db"=> "products.product_name" ,     // database table's column name
-                "dt"=> "product_name" ,     // name we get from as
+                "db"=> "roles.name" ,     // database table's column name
+                "dt"=> "name" ,     // name we get from as
             ),
 
             array(
-                "db"=> "products.product_desc",
-                "dt"=> "product_desc",
-            ),
-            array( 
-                "db"=> "products.product_price" ,
-                "dt"=> "product_price" ,
-            ),
-            
-            array( 
-                "db"=> "products.category_id" ,
-                "dt"=> "product_cat_name" ,
+                "db"=> "roles.role_values",
+                "dt"=> "role_values",
             ),
             array( 
                 "db"=> "action" ,
@@ -124,13 +115,10 @@ class ProductController extends Controller
         }
         $login_users_role = Auth::user()->role;
 
-        // $get_products = Category::with('products')->find(1);
-        // dd($get_products->toarray());
-
         $filter_arr_clone = $filter_arr;
         $filter_arr_clone['recordsFiltered'] = TRUE;
-        $o_list = $this->product_model->get_products(NULL, $filter_arr);
-        $totalFiltered = ($this->product_model->get_products(NULL, $filter_arr_clone));
+        $o_list = $this->role_model->get_roles(NULL, $filter_arr);
+        $totalFiltered = ($this->role_model->get_roles(NULL, $filter_arr_clone));
         if(!empty($totalFiltered)){
             $totalFiltered = count($totalFiltered);
         }
@@ -138,7 +126,7 @@ class ProductController extends Controller
             $totalFiltered = 0;
         }
 
-        $totalRecords = $this->product_model->get_products(NULL);
+        $totalRecords = $this->role_model->get_roles(NULL);
         if(!empty($totalRecords)){
             $totalRecords = count($totalRecords);
         } 
@@ -151,42 +139,27 @@ class ProductController extends Controller
         if(!empty($o_list)){
             foreach ($o_list as $row) {
 
-                $action_str = ' <a class="edit_pd_details" href="'.route('edit_pd_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
+                $action_str = ' <a class="edit_role_details" href="'.route('edit_role_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
 
-                $action_str .= ' <a class="delete_pd text text-danger" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
+                $action_str .= ' <a class="delete_role text text-danger" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
 
-                // Sales team can view/access the products 
-                // 1=SuperAdmin, 2= Admin, 3=SalesTeam
-                if($login_users_role == 1 || $login_users_role == 3){
+                // 1=SuperAdmin, 2= Admin, 3=subadmin
+                if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
                     $action_col_chk = $action_str;
                 }
                 else{
                     $action_col_chk = 'No Access';
                 }
-                $product_img = '';
-                if(!empty($row->product_img)){
-                    $img = asset('uploads/' .$row->product_img);
-                    $product_img = '<img src="'.$img.'" id="profile_img_display" width="50" height="50">';
-                }
-
-                $cat_id = $row->category_id;
-                $cat_details = $this->category_model->get_cat($cat_id);
-
-                $product_cat_name = '<button type="button" cat-name="'.$cat_details->category_name.'" cat-des="'.$cat_details->category_desc.'" class="btn btn-outline-primary cat_data_load" data-toggle="modal" data-target="#exampleModalCenter">
-                '.$row->product_cat_name.'</button>';
                 
 
                 // these pass to views
                 $checkbox = '<input type="checkbox" class="checked_id" name="ids[]" value="'.$row->id.'">';
                 $data[] = (object) array(
                     'checkbox' => $checkbox,
-                    'product_name'  => e(!empty($row->product_name)? $row->product_name:''),
-                    'product_desc'  => e(!empty($row->product_desc)? $row->product_desc:''),
-                    'product_price'  => e(!empty($row->product_price)? $row->product_price:''),
-                    'product_img'  => $product_img,
-                    'product_cat_name'  => $product_cat_name,
+                    'name'  => e(!empty($row->name)? $row->name:''),
+                    'role_values'  => e(!empty($row->role_values)? $row->role_values:''),
                     'action'    =>	$action_col_chk
                 );
             }
@@ -206,11 +179,11 @@ class ProductController extends Controller
         );  
     }
 
-    public function DeletePd(Request $request){
+    public function DeleteRole(Request $request){
             
             $return_status = array(
                 'status'  => FALSE,
-                'message' => 'Failed to delete product',
+                'message' => 'Failed to delete role',
                 'data'    => $request->all()
             );
 
@@ -243,20 +216,54 @@ class ProductController extends Controller
                 $return_status['data'] = $errors;
             } else {
                 $u_id = $request->u_id;
+                $login_users_id = Auth::user()->id;
                 if( empty($u_id) ){
                     $return_status['status'] = FALSE;
                     $return_status['message'] = 'Parameter missing';
                     $return_status['data'] = array();
                 } else {
-                        $delete_flag = FALSE;
-                        $user_row = DB::table('users')->where('id', '=', $u_id)->first();
-                        $is_del = Product::where('id', $u_id)->delete();
-                        if( !empty($is_del ) ){
+
+                        $delete_flag = TRUE;
+                        $category_row = DB::table('categories')->where('id', '=', $u_id)->first();
+
+                        // get users assigned to selected role
+                        $user_assign_to_role = DB::table('users')->where('role', '=', $u_id)->get();
+
+                        if(count($user_assign_to_role) > 0 && !empty(count($user_assign_to_role))){
+                            foreach($user_assign_to_role as $user){
+                                $all_assigned_ids[] = $user->id;
+                            }
+                            if(in_array($login_users_id,$all_assigned_ids)){
+                                 // current loggedin-user assigned to selected role, don't delete
+                                 $delete_flag = FALSE;
+                            }
+                            else{
+                                $delete_flag = TRUE;
+                                // deleting all users assigned to selected role
+                                $users_deleted = User::where('role', $u_id)->delete();
+
+                                // deleting selected role
+                                $role_deleted = Role::where('id', $u_id)->delete();
+                            }   
+                        }
+                        else{
+                            $delete_flag = TRUE;
+                            // no user assigned, deleting selected role
+                            $role_deleted = Role::where('id', $u_id)->delete();
+                        }
+
+                        if($delete_flag){
                             $return_status['status'] = TRUE;
-                            $return_status['message'] = 'Product successfully deleted';
+                            $return_status['message'] = 'Role successfully deleted';
                             $return_status['data'] = array();
                         } 
-                }
+                        else{
+                            $return_status['status'] = FALSE;
+                            $return_status['message'] = 'Unable to delete. Your account assigned to this role.';
+                            $return_status['data'] = array();
+                        }
+                        
+                 }
 
             return response()->json(//Ajax response in json format
                 $return_status
@@ -264,71 +271,71 @@ class ProductController extends Controller
         }
     }
 
-    public function EditPdMasterView($id = NULL){
+    public function EditRoleMasterView($id = NULL){
         $data = array();		
-        $heading = 'Add Product';
-        $pd_details = '';
+        $heading = 'Add Role';
+        $role_details = '';
         $pending_data = '';
         $permission_array = array();
         $breadcrumbs = array(
             array('name' => 'Home',
             'url' => route('home')),
-            array('name' => 'Products',
-            'url' => route('pd_view')),
+            array('name' => 'Role',
+            'url' => route('role_view')),
         );
 
-        $get_cat_list = $this->product_model->get_cat_list();
+        $get_menu_list = $this->role_model->get_menu_list();
 
         if(!empty($id)){
-            $heading = 'Edit Product';
-            $breadcrumbs[] = array('name' => 'Edit Product',
+            $heading = 'Edit Role';
+            $breadcrumbs[] = array('name' => 'Edit Role',
             'url' => '');  
-            $pd_details = $this->product_model->get_products($id);
+            $role_details = $this->role_model->get_roles($id);
         }
         else{
-            $breadcrumbs[] = array('name' => 'Add Product',
+            $breadcrumbs[] = array('name' => 'Add Role',
             'url' => '');    
         }
 
         $data = [
             'heading'    => $heading,
-            'go_back_url'    => route('pd_view'),
+            'go_back_url'    => route('role_view'),
             'breadcrumbs' => $breadcrumbs,
             'row_id'        => $id,
-            'pd_details'  => $pd_details,
-            'get_cat_list'  => $get_cat_list,
+            'role_details'  => $role_details,
+            'get_menu_list'  => $get_menu_list,
 
         ];
-        return view('pd_add_edit', $data);
+        return view('role_add_edit', $data);
     }
 
-    public function SavePdDetails(Request $request){
+    public function SaveRoleDetails(Request $request){
         $return_status = array(
             'status' => FALSE,
-            'message' => 'Product details failed to save',
+            'message' => 'Role details failed to save',
             'data' => ''
         );
 
 
         $category_id = $request->category_id;
-        $product_name = $request->product_name;
-        $product_desc = $request->product_desc;
+        $name = $request->name;
+        $role_values = $request->role_values;
         $product_price = $request->product_price;
         $row_id = $request->row_id;
 
         $rules = array(
             'category_id' => 'required',
-            'product_desc' => 'required',
+            'role_values' => 'required',
             'product_price' => 'required',
-            'product_name' => 'required',         
+            'name' => 'required',         
             'product_img' => 'nullable|mimes:jpeg,jpg,png,gif|max:5250',
         );
         
         $messages = [
             'category_id.required' 		=> 'User Role Required',
-            'product_desc.required' 		=> 'First Name Role Required',
+            'role_values.required' 		=> 'First Name Role Required',
             'product_price.required' 		=> 'Last Name Required',
-            'product_name.required' 			=>  'product_name Required',
+            'name.required' 			=>  'name Required',
             'product_img.max' 	   		=> "Profile image size cant be greater than 5MB",
         ];
         // Validate the request
@@ -363,12 +370,12 @@ class ProductController extends Controller
                 }
             }
 
-            if(!empty($product_name)){
-                $data_arr += array('product_name' => $product_name);
+            if(!empty($name)){
+                $data_arr += array('name' => $name);
             }
 
-            if(!empty($product_desc)){
-                        $data_arr += array('product_desc' => $product_desc);
+            if(!empty($role_values)){
+                        $data_arr += array('role_values' => $role_values);
             }
             if(!empty($product_price)){
                 $data_arr += array('product_price' => $product_price);
@@ -386,20 +393,20 @@ class ProductController extends Controller
                 if(empty($row_id)){ //create new item
                     $data_arr += array('created_at' => date('Y-m-d H:i:s'));
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $creating_product = Product::create($data_arr);
+                    $creating_product = Role::create($data_arr);
                     $last_id = $creating_product->id;
-                    //$last_id = $this->product_model->save_pd_details($data_arr);
+                    //$last_id = $this->role_model->save_pd_details($data_arr);
                 }
                 else{
                     $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $last_id = Product::where('id', $row_id)
+                    $last_id = Role::where('id', $row_id)
                                        ->update($data_arr);
-                    //$last_id = $this->product_model->save_pd_details($data_arr, $row_id);
+                    //$last_id = $this->role_model->save_pd_details($data_arr, $row_id);
                 }
 
                 if(!empty($last_id)){
                     $return_status['status'] = TRUE;
-                    $return_status['message'] = 'Product details successfully saved';
+                    $return_status['message'] = 'Role details successfully saved';
                     $return_status['data'] = array();
                 }
             }            

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Product;
-use App\Models\Category;
+use App\Models\Role;
+use App\Models\Menu;
 use Validator;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailSend;
 use Symfony\Component\HttpFoundation\Response;
 
-class CategoryController extends Controller
+class MenuController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -29,45 +29,45 @@ class CategoryController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->product_model = new \App\Models\Product;
+        $this->role_model = new \App\Models\Role;
 		$this->users_model = new \App\Models\User;
-		$this->category_model = new \App\Models\Category;
+		$this->menu_model = new \App\Models\Menu;
         $this->offset = config('constants.DEFAULT_OFFSET');
         $this->limit = config('constants.DEFAULT_LIMIT');
     }
 
-    // Category controller methods 
-    public function CatView()
+    // Menu controller methods 
+    public function MenuView()
     {
         $breadcrumbs = array(
             array('name' => 'Home',
             'url' => route('home')),
-            array('name' => 'Category',
+            array('name' => 'Menu',
             'url' =>  ''),
             
         );
         $login_users_role = Auth::user()->role;
-        if($login_users_role == 1 || $login_users_role == 3){
+        if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
             $action_col_chk = 'have_access';
         }
         else{
             $action_col_chk = '';
         }
         $data = [
-            'page_title' 	 => 'Category List',
+            'page_title' 	 => 'Menu List',
             'active_sidebar' => '',
             'action_col_chk' => $action_col_chk,
             'breadcrumbs' => $breadcrumbs,
-            "heading" => 'Category',
+            "heading" => 'Menu',
 
         ];
         //dd($data);
         
-        return view('cat_details_listing', $data);
+        return view('menu_details_listing', $data);
         
     }
 
-    public function CatAjaxList (Request $request){
+    public function MenuAjaxList (Request $request){
 
         $columns = array(
 
@@ -77,13 +77,13 @@ class CategoryController extends Controller
             ),
 
             array( 
-                "db"=> "categories.category_name" ,    
-                "dt"=> "category_name" ,    
+                "db"=> "menus.menu_name" ,    
+                "dt"=> "menu_name" ,    
             ),
 
             array(
-                "db"=> "categories.category_desc",
-                "dt"=> "category_desc",
+                "db"=> "menus.menu_URL",
+                "dt"=> "menu_URL",
             ),
             array( 
                 "db"=> "action" ,
@@ -118,8 +118,8 @@ class CategoryController extends Controller
         $filter_arr_clone = $filter_arr;
         $filter_arr_clone['recordsFiltered'] = TRUE;
 
-        $o_list = $this->category_model->get_cat(NULL, $filter_arr);
-        $totalFiltered = ($this->category_model->get_cat(NULL, $filter_arr_clone));
+        $o_list = $this->menu_model->get_menu(NULL, $filter_arr);
+        $totalFiltered = ($this->menu_model->get_menu(NULL, $filter_arr_clone));
         if(!empty($totalFiltered)){
             $totalFiltered = count($totalFiltered);
         }
@@ -127,7 +127,7 @@ class CategoryController extends Controller
             $totalFiltered = 0;
         }
 
-        $totalRecords = $this->category_model->get_cat(NULL);
+        $totalRecords = $this->menu_model->get_menu(NULL);
         if(!empty($totalRecords)){
             $totalRecords = count($totalRecords);
         } 
@@ -140,15 +140,14 @@ class CategoryController extends Controller
         if(!empty($o_list)){
             foreach ($o_list as $row) {
 
-                $action_str = ' <a class="edit_cat_details" href="'.route('edit_cat_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
+                $action_str = ' <a class="edit_menu_details" href="'.route('edit_menu_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
 
-                $action_str .= ' <a class="delete_cat text text-danger" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
+                $action_str .= ' <a class="delete_menu text text-danger" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
 
-                // Sales team access/view the categories 
-                // 1=SuperAdmin, 2= Admin, 3=SalesTeam
-                if($login_users_role == 1 || $login_users_role == 3){
+                // 1=SuperAdmin, 2= Admin
+                if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
                     $action_col_chk = $action_str;
                 }
                 else{
@@ -159,8 +158,8 @@ class CategoryController extends Controller
                 $checkbox = '<input type="checkbox" class="checked_id" name="ids[]" value="'.$row->id.'">';
                 $data[] = (object) array(
                     'checkbox' => $checkbox,
-                    'category_name'  => e(!empty($row->category_name)? $row->category_name:''),
-                    'category_desc'  => e(!empty($row->category_desc)? $row->category_desc:''),
+                    'menu_name'  => e(!empty($row->menu_name)? $row->menu_name:''),
+                    'menu_URL'  => e(!empty($row->menu_URL)? $row->menu_URL:''),
                     'action'    =>	$action_col_chk
                 );
             }
@@ -179,11 +178,11 @@ class CategoryController extends Controller
         );  
     }
 
-    public function DeleteCat(Request $request){
+    public function DeleteMenu(Request $request){
             
         $return_status = array(
             'status'  => FALSE,
-            'message' => 'Failed to delete Category',
+            'message' => 'Failed to delete Menu',
             'data'    => $request->all()
         );
 
@@ -223,21 +222,21 @@ class CategoryController extends Controller
                     $return_status['data'] = array();
                 } else {
                         $delete_flag = FALSE;
-                        $category_row = DB::table('categories')->where('id', '=', $u_id)->first();
+                        $menu_row = DB::table('menus')->where('id', '=', $u_id)->first();
 
-                        // get products assigned to category
+                        // get products assigned to Menu
                         $products_in_cat = DB::table('products')->where('category_id', '=', $u_id)->get();
                         if(count($products_in_cat) > 0 && !empty(count($products_in_cat))){
-                            // deleting all products assigned to selected category
+                            // deleting all products assigned to selected Menu
                             $pds_deleted = Product::where('category_id', $u_id)->delete();
 
                         }
-                            // deleting selected category
-                        $category_deleted = Category::where('id', $u_id)->delete();
+                        // deleting selected Menu
+                        $category_deleted = Menu::where('id', $u_id)->delete();
 
                         if( !empty($category_deleted ) ){
                             $return_status['status'] = TRUE;
-                            $return_status['message'] = 'Category successfully deleted';
+                            $return_status['message'] = 'Menu successfully deleted';
                             $return_status['data'] = array();
                         } 
                 }
@@ -248,60 +247,87 @@ class CategoryController extends Controller
         }
     }
 
-    public function EditCatMasterView($id = NULL){
+    public function EditMenuMasterView($id = NULL){
         $data = array();		
-        $heading = 'Add Category';
-        $cat_details = '';
+        $heading = 'Add Menu';
+        $menu_details = '';
         $pending_data = '';
         $permission_array = array();
         $breadcrumbs = array(
             array('name' => 'Home',
             'url' => route('home')),
-            array('name' => 'Category',
-            'url' => route('cat_view')),
+            array('name' => 'Menu',
+            'url' => route('menu_view')),
         );
 
         if(!empty($id)){
-            $heading = 'Edit Category';
-            $breadcrumbs[] = array('name' => 'Edit Category',
+            $heading = 'Edit Menu';
+            $breadcrumbs[] = array('name' => 'Edit Menu',
             'url' => '');  
-            $cat_details = $this->category_model->get_cat($id);
+            $menu_details = $this->menu_model->get_menu($id);
         }
         else{
-            $breadcrumbs[] = array('name' => 'Add Category',
+            $breadcrumbs[] = array('name' => 'Add Menu',
             'url' => '');    
         }
 
         $data = [
             'heading'    => $heading,
-            'go_back_url'    => route('cat_view'),
+            'go_back_url'    => route('menu_view'),
             'breadcrumbs' => $breadcrumbs,
             'row_id'        => $id,
-            'cat_details'  => $cat_details,
+            'menu_details'  => $menu_details,
 
         ];
-        return view('cat_add_edit', $data);
+        return view('menu_add_edit', $data);
     }
 
-    public function SaveCatDetails(Request $request){
+    public function SaveMenuDetails(Request $request){
         $return_status = array(
             'status' => FALSE,
-            'message' => 'Category details failed to save',
+            'message' => 'Menu details failed to save',
             'data' => ''
         );
 
-        $category_name = $request->category_name;
-        $category_desc = $request->category_desc;
+        $menu_name = $request->menu_name;
+        $menu_URL = $request->menu_URL;
         $row_id = $request->row_id;
 
+        $login_user_fname = Auth::user()->first_name;
+        $login_user_role_id = Auth::user()->role;
+        $login_user_role = getUserRoleNameOnIds($login_user_role_id);
+        $login_user_lname = Auth::user()->last_name;
+        $login_user_fullname = $login_user_fname.' '.$login_user_lname; 
+
+
         $rules = array(
-            'category_name' => 'required',
-            'category_desc' => 'required',
+            'menu_name'     => [
+                'required',
+                    Rule::unique('menus')
+                    ->where(function ($query) {
+                        $query->where('deleted_at', '=', NULL);
+                    })
+                    ->ignore($row_id),
+            ], 
+
+            'menu_URL'     => [
+                'required',
+                'url',
+                    Rule::unique('menus')
+                    ->where(function ($query) {
+                        $query->where('deleted_at', '=', NULL);
+                    })
+                    ->ignore($row_id),
+            ],
+
         );
         
         $messages = [
-            'category_name.required' 		=> 'Category Name Role Required',
-            'category_desc.required' 		=> 'Category Description Required',
+            'menu_name.required' 			=>  'Menu name Required',
+            'menu_name.unique' 				=> 'Entered name already in system',
+            'menu_URL.required' 			=>  'Menu URL Required',
+            'menu_URL.unique' 				=> 'Entered URL already in system',
+            'menu_URL.url' 				=> 'Invalid URL format',
         ];
 
         // Validate the request
@@ -323,11 +349,11 @@ class CategoryController extends Controller
         else{
             $data_arr = array();
 
-            if(!empty($category_name)){
-                        $data_arr += array('category_name' => $category_name);
+            if(!empty($menu_name)){
+                        $data_arr += array('menu_name' => $menu_name);
             }
-            if(!empty($category_desc)){
-                $data_arr += array('category_desc' => $category_desc);
+            if(!empty($menu_URL)){
+                $data_arr += array('menu_URL' => $menu_URL);
             }
             
             if( empty($data_arr) ){
@@ -340,21 +366,23 @@ class CategoryController extends Controller
                 $last_id;
                 
                 if(empty($row_id)){ //create new item
-                    $data_arr += array('created_at' => date('Y-m-d H:i:s'));
-                    $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $creating_category = Category::create($data_arr);
-                    $last_id = $creating_category->id;
-                    //$last_id = $this->category_model->save_cat_details($data_arr); 
+                    $data_arr += array('created_on' => date('Y-m-d H:i:s'));
+                    $data_arr += array('created_by' => $login_user_fullname.':'. $login_user_role);
+                    //dd($data_arr);
+                    // $creating_menu = Menu::create($data_arr);
+                    // $last_id = $creating_menu->id;
+                    $last_id = $this->menu_model->save_menu_details($data_arr); 
                 }
                 else{
-                    $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $last_id = Category::where('id', $row_id)
+                    $data_arr += array('modified_on' => date('Y-m-d H:i:s'));
+                    $data_arr += array('modified_by' => $login_user_fullname.':'. $login_user_role);
+                    $last_id = Menu::where('id', $row_id)
                                        ->update($data_arr);
-                    //$last_id = $this->category_model->save_cat_details($data_arr, $row_id);
+                    //$last_id = $this->menu_model->save_menu_details($data_arr, $row_id);
                 }
                 if(!empty($last_id)){
                     $return_status['status'] = TRUE;
-                    $return_status['message'] = 'Category details successfully saved';
+                    $return_status['message'] = 'Menu details successfully saved';
                     $return_status['data'] = array();
                 }
                 

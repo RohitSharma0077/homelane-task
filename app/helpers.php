@@ -26,10 +26,10 @@ function getAssignedMenuIdsToRole(){
 
 //To get saved URL based on menu ids
 function getUrlsWithMenuIds($menu_ids_arr = NULL){
-    
     if(empty($menu_ids_arr)){
         return FALSE;
     }
+    //get only non-deleted menus
     $menu_details = Menu::whereIn('id', $menu_ids_arr)
                          ->where('deleted_at','=',NULL)
                          ->get();
