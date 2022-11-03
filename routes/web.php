@@ -47,17 +47,15 @@ Route::get('/clear-cache', function() {
 Auth::routes();
 
 // common routes, access by all
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/url_check/routes', [HomeController::class, 'checkURLRoutes'])->name('check_url_exist_in_routes');
+Route::get('/coming/soon', [HomeController::class, 'CommingSoonPage'])->name('coming_soon');
 Route::get('users/listing', [UsersController::class, 'UsersView'])->name('users_view');
 Route::get('users/ajax/list', [UsersController::class, 'UsersAjaxList'])->name('users_ajax_list');
 Route::post('delete/user', [UsersController::class, 'DeleteUser'])->name('delete_user');
 Route::get('users/edit/{id?}', [UsersController::class, 'EditUserMasterView'])->name('edit_user_master_view');
 Route::post('save/users/details', [UsersController::class, 'SaveUsersDetails'])->name('save_users_details');
-
-Route::get('users-export', function () {
-    return Excel::download(new UsersExport, 'users.xlsx');
-})->name('users.export');
-Route::get('/send-email', [MailController::class, 'sendEmail']);
 
 Route::middleware(['auth', 'role_super:superadmin'])->group(function () {
     // User is authentication and has super admin role

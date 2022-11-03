@@ -71,16 +71,23 @@
                                                             <label class="control-label">User Role *</label>
                                                             <select id="role" name="role" class="form-control">
                                                                 <option value="">Select</option>
-                                                            
+                                                                <?php
+                                                                    $all_routes = getUserRoleList();
+                                                                    foreach($all_routes as $route){ ?>
+                                                                    <option value="{{ $route['id']}}" {{ ($route['id'] == $role)? 'selected': ' ' }} >
+                                                                        {{ $route['name'] }}
+                                                                    </option>
+                                                                <?php } ?>
+                                                                        
                                                                 <!-- <option value="{{ config('constants.ROLES.SUPER')}}" {{ (config('constants.ROLES.SUPER') == $role)? 'selected': ' ' }} >
                                                                     {{ config('constants.REVERSAL_ROLES.SUPER') }}
                                                                 </option> -->
-                                                                <option value="{{ config('constants.ROLES.ADMIN')}}" {{ (config('constants.ROLES.ADMIN') == $role)? 'selected': ' ' }} >
+                                                                <!-- <option value="{{ config('constants.ROLES.ADMIN')}}" {{ (config('constants.ROLES.ADMIN') == $role)? 'selected': ' ' }} >
                                                                     {{ config('constants.REVERSAL_ROLES.ADMIN') }}
                                                                 </option>
                                                                 <option value="{{ config('constants.ROLES.SALES')}}" {{ (config('constants.ROLES.SALES') == $role)? 'selected': ' ' }} >
                                                                     {{ config('constants.REVERSAL_ROLES.SALES') }}
-                                                                </option>
+                                                                </option> -->
                                                             </select>
                                                             @if ($errors->has('role'))
                                                                 <small class="form-control-feedback">{{ $errors->first('role') }}</small>

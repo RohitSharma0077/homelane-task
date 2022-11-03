@@ -74,4 +74,52 @@
           }
     }
 
+
+//check whether menu url exist, if exist then redirect to route, if not exist then redirect to dynamic created page
+$(document).on('click', '.url_check', function() {
+    var s_url = $(this).attr("s-url");
+    var s_name = $(this).attr("s-name");
+    $this = $(this);
+    $this.prop("disabled", true);
+    console.log(s_url);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('check_url_exist_in_routes') }}",
+                data: {'s_url': s_url, 's_name': s_name },
+                headers: {
+                    // 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                },
+                // dataType: 'json',
+                success: function (result) {
+                    $this.prop("disabled", false);
+                    if(result.status == true){
+                        if(result.third_party){
+                            window.open(result.url, '_blank');
+                        }
+                        else{
+                            window.open(result.url, '_self');
+                        }
+                    }
+                    else{
+                            showSweetAlertMessage(result.status,result.message);
+                    }       
+                },
+                error: function (data) {
+                    // console.log('Error:', data);
+                    $this.prop("disabled", false);
+                    var parse_error = JSON.parse(data.responseText);
+                    // console.log('parse_error:'+ parse_error.error);
+                    if(typeof parse_error.error != 'undefined' && parse_error.error == 'Unauthenticated.'){
+                        showSweetAlertMessage(false,'Your session has expired. Please login again.');
+                        $(".close, .modal").click(function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+    
+});
+//Delete user close
+
 </script>

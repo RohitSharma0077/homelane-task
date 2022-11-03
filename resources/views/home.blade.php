@@ -1,6 +1,8 @@
 <?php 
 //dd(config('constants.ROLES.SUPER'));
 //dd($breadcrumbs);
+// $menu_counts = 0;
+// $role_count = 0;
 
 ?>
 
@@ -31,12 +33,12 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>{{ $user_count }}</h3>
+                <h3>{{ $menu_count }}</h3>
 
-                <p>Users Registrations</p>
+                <p> Menu Permissions</p>
               </div>
               <div class="icon">
-                <i class="ion ion-person-add"></i>
+                <i class="ion ion-android-menu"></i>
               </div>
               <a href="{{ route('users_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -46,12 +48,12 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>{{ $category_count }}</h3>
+                <h3>{{ $role_count }}</h3>
 
-                <p>Categories</p>
+                <p>Total Roles</p>
               </div>
               <div class="icon">
-                <i class="ion ion-bag"></i>
+                <i class="ion ion-android-contacts"></i>
               </div>
               <a href="{{ route('cat_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -61,12 +63,12 @@
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>{{ $product_count }}</h3>
+                <h3>{{ $user_count }}</h3>
 
-                <p>Products</p>
+                <p>Register Users</p>
               </div>
               <div class="icon">
-                  <i class="ion ion-bag"></i>
+                  <i class="ion ion-person-add"></i>
               </div>
               <a href="{{ route('pd_view') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>

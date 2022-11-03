@@ -154,26 +154,14 @@ class UsersController extends Controller
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
 
-                // Sales team only view the users 
-                // 1=SuperAdmin, 2= Admin, 3=SalesTeam
+                // 1=SuperAdmin, 2= Admin
                 if($login_users_role == 1 || $login_users_role == 2){
                     $action_col_chk = $action_str;
                 }
                 else{
                     $action_col_chk = 'No Access';
                 }
-                switch($row->role){
-                    case '1':
-                        $u_role = 'Super Admin';
-                    break;
-                    case '2':
-                        $u_role = 'User Admin';
-                    break;
-                    case '3':
-                        $u_role = 'Sales Team';
-                    break;
-                }
-                
+                $u_role = getUserRoleNameOnIds($row->role);
 
 				// these pass to views
                 $checkbox = '<input type="checkbox" class="checked_id" name="ids[]" value="'.$row->id.'">';
@@ -309,6 +297,11 @@ class UsersController extends Controller
         $first_name = $request->first_name;
         $last_name = $request->last_name;
         $row_id = $request->row_id;
+        $login_user_fname = Auth::user()->first_name;
+        $login_user_role_id = Auth::user()->role;
+        $login_user_role = getUserRoleNameOnIds($login_user_role_id);
+        $login_user_lname = Auth::user()->last_name;
+        $login_user_fullname = $login_user_fname.' '.$login_user_lname; 
 
         $rules = array(
             'role' => 'required',
@@ -367,7 +360,7 @@ class UsersController extends Controller
                 'email' => $email, 
                 'password' => bcrypt($password),
                 'first_name' => $first_name, 
-                'last_name' => $last_name,                    
+                'last_name' => $last_name,              
             );
             
             if( empty($data_arr) ){
@@ -380,28 +373,21 @@ class UsersController extends Controller
                 $last_id;
               
                 if(empty($row_id)){ //create new item
-                    $data_arr += array('created_at' => date('Y-m-d H:i:s'));
-                    $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    //dd($request->all());
-                     $creating_user = User::create($data_arr);
-                     //dd($creating_user);
-                     $last_id = $creating_user->id;
-                    //$last_id = $this->users_model->save_users_details($data_arr);
-                     //dd($last_id);
-                    $user_details = $this->users_model->get_users($last_id);
-                    $user_details->txt_password = $password;
-                    $genrated_mail = $this->send_mail_user($user_details, "User Added", "Welcome, Your account has been created.Here are your login credentials", );
+                    $data_arr += array('created_on' => date('Y-m-d H:i:s'));
+                    $data_arr += array('created_by' => $login_user_fullname.'-'. $login_user_role);
+                    // $creating_user = User::create($data_arr);    // query checks for created_at column automatically
+                    // $last_id = $creating_user->id;
+                    $last_id = $this->users_model->save_users_details($data_arr);
+                   
                    
                 }
                 else{
-                    $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $last_id = User::where('id', $row_id)
-                                    ->update($data_arr);                
-                    //$last_id = $this->users_model->save_users_details($data_arr, $row_id);
-                    $user_details = $this->users_model->get_users($row_id);
-                    $user_details->txt_password = $password;
-                    $is_updated = 1;
-                    $genrated_mail = $this->send_mail_user($user_details, "User Updated", "Here are updated details.", $is_updated);
+                    $data_arr += array('modified_on' => date('Y-m-d H:i:s'));
+                    $data_arr += array('modified_by' => $login_user_fullname.'-'. $login_user_role);
+                    // $last_id = User::where('id', $row_id)      // query checks for updated_at column automatically
+                    //                 ->update($data_arr);                
+                    $last_id = $this->users_model->save_users_details($data_arr, $row_id);
+                  
                 }
 
                 if(!empty($last_id)){
