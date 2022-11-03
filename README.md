@@ -4,4 +4,4 @@ Steps to run a project
 3. Run, composer install to generate vendor folder (if require run, composer update and composer autoload-dump)
 4. php artisan migrate 
 6. php artisan db:seed --class=superadmin_seeder 
-5. http://localhost:8080/data-management-system/public/index.php/
+5. http://localhost:80/homelane-task/public/index.php/

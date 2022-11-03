@@ -10,6 +10,17 @@
   <div class="content-wrapper">
    <!-- breadcrumbs -->
    @include('layouts.common_breadcrumbs')
+   
+   @if(session()->has('success_message') )
+        <div class="alert alert-success">
+            {{ session()->get('success_message') }}
+        </div>
+    @endif
+    @if (Session::has('err_msg'))
+       <div class="alert alert-warning" role="alert">
+           {{Session::get('err_msg')}}
+       </div>
+  @endif
 
     <!-- Main content -->
     <section class="content">

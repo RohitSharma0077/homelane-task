@@ -24,10 +24,10 @@ class RoleCheckSuper
             return $next($request);
 
         }
-        abort(403);
-       // return redirect('/');
-        // return back()
-        //         ->with('return_popup_status', FALSE) // send back with flashed session data
-        //         ->with('return_popup_message', 'Unauthorized Access'); // send back with flashed session data
+       // abort(403);
+       return \Redirect::to('/')->with(['type' => 'error','err_msg' => 'Unauthorized access']);
+       //return \Redirect::to('/')->with(['type' => 'success','success_message' => 'Unauthorized access']);
+       
+       
     }
 }

@@ -71,8 +71,8 @@
 	        	{ "data": "product_name"},
                 { "data": "product_desc"},
 				{ "data": "product_price"},
-				{ "data": "product_cat_name"},
-                { "data": "product_img"},
+				{ "data": "product_cat_name", orderable: false, searchable: false},
+                { "data": "product_img", orderable: false, searchable: false},
 	            { "data": "action", orderable: false, searchable: false  }
 	        ]
 		});
