@@ -72,7 +72,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ route('users_view') }}" class="nav-link">
               <i class="nav-icon fas fas fa-user"></i>
               <p>
                 User Master
