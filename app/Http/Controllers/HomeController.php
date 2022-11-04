@@ -32,9 +32,9 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->product_model = new \App\Models\Product;
+        $this->role_model = new \App\Models\Role;
 		$this->users_model = new \App\Models\User;
-		$this->category_model = new \App\Models\Category;
+		$this->menu_model = new \App\Models\Menu;
         $this->offset = config('constants.DEFAULT_OFFSET');
         $this->limit = config('constants.DEFAULT_LIMIT');
     }

@@ -15,14 +15,15 @@
     	$name        = !empty($role_details->name)?$role_details->name: '';
         $role_values    = !empty($role_details->role_values)?$role_details->role_values: '';
     }
+    $menu_list = $menu_ids_arr = '';
 
     if(!empty($get_menu_list)){
-        $get_menu_list = $get_menu_list;
+        $menu_list = $get_menu_list;
     }
-    else{
-        $get_menu_list = '';
+    if(!empty($role_values)){
+        $menu_ids_arr = explode("," , $role_values);
     }
-    //dd($get_menu_list);
+    //dd($menu_list);
 ?>
 <div class="content-wrapper">
     <!-- breadcrumbs -->
@@ -65,28 +66,31 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">Menu List *</label>
-                                                            <select multiple id="menu_ids" name="menu_ids[]" class="form-control">
+                                                            <select multiple id="menu_ids_arr" name="menu_ids_arr[]" class="form-control">
                                                                 <option value="">Select</option>
 
                                                                 <?php
-                                                                 foreach($get_menu_list as $menu_detail){ 
-                                                                    if(!empty($role_values)) { ?>
-                                                                    <option value="{{ $menu_detail->id }}">
-                                                                        {{ $menu_detail->menu_name }}
-                                                                    </option>    
-                                                                      <?php } 
-                                                                      else {  ?>
+                                                                 if(!empty($menu_list)){
+                                                                    foreach($menu_list as $menu_detail){ 
+                                                                        if(!empty($menu_ids_arr)) { ?>
+                                                                        <option value="{{ $menu_detail->id }}" 
+                                                                            {{ (in_array($menu_detail->id,$menu_ids_arr)) ? 'selected' : '' }}>
+                                                                            {{ $menu_detail->menu_name }}
+                                                                        </option>    
+                                                                        <?php } 
+                                                                        else {  ?>
 
-                                                                      <option value="{{ $menu_detail->id }}" >
-                                                                        {{ $menu_detail->menu_name }}
-                                                                    </option>   
-                                                                    <?php } ?>
-                                                                 <?php } ?>
+                                                                        <option value="{{ $menu_detail->id }}" >
+                                                                            {{ $menu_detail->menu_name }}
+                                                                        </option>   
+                                                                        <?php } ?>
+                                                                    <?php }
+                                                                     } ?>     
                                                             </select>
-                                                            <small class="form-control-feedback">Note: Press ctrl and select multiple menus</small>
+                                                            <small class="form-control-feedback text-info">Note: Press ctrl and select multiple menus</small>
                                                             <span></span>
-                                                            @if ($errors->has('role_values'))
-                                                                <small class="form-control-feedback">{{ $errors->first('role_values') }}</small>
+                                                            @if ($errors->has('menu_ids_arr'))
+                                                                <small class="form-control-feedback">{{ $errors->first('menu_ids_arr') }}</small>
                                                             @endif
                                                         </div>
                                                     </div>
@@ -142,10 +146,10 @@
                     }
                 },
 
-                role_values: {
+                menu_ids_arr: {
                     validators: {
                         notEmpty :{
-                            message: 'Please select menu from list'
+                            message: 'Please select at least 1 item'
                         }
                     }
                 },

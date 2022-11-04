@@ -177,6 +177,42 @@ $(document).on('click', '.delete_role', function() {
 });
 //Delete role close
 
+$(document).on('click', '.view_assign_menus', function() {
+    var role_nm = $(this).attr("role-name");
+    var menu_nm = $(this).attr("menu-name");
+    //var menu_url = $(this).attr("menu-url");
+    var text ='<h5><b>Menu Name(s) - '+role_nm+'</b> <br></h5><h7>'+menu_nm+'</h7>';
+    $( "#menu_dataid" ).append( text );
+});
+
+$(document).on('click', '.cls_modal', function() {
+    $("#menu_dataid").val('');
+    $("#menu_dataid").text('');
+    $("#menu_dataid").empty();
+    $("#menu_dataid").val('False');
+});
+
 </script>
+
+
+ <!-- Modal -->
+ <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">Assigned Menu(s)</h5>
+            <button type="button" class="close cls_modal" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="menu_dataid"> </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary cls_modal" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>
 
 @endsection

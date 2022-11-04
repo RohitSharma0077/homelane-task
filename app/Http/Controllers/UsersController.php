@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Product;
-use App\Models\Category;
+use App\Models\Role;
+use App\Models\Menu;
 use Validator;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -29,9 +29,9 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->product_model = new \App\Models\Product;
+        $this->role_model = new \App\Models\Role;
 		$this->users_model = new \App\Models\User;
-		$this->category_model = new \App\Models\Category;
+		$this->menu_model = new \App\Models\Menu;
         $this->offset = config('constants.DEFAULT_OFFSET');
         $this->limit = config('constants.DEFAULT_LIMIT');
     }
@@ -149,7 +149,7 @@ class UsersController extends Controller
         if(!empty($o_list)){
         	foreach ($o_list as $row) {
 
-                $action_str = ' <a class="edit_user_details" href="'.route('edit_user_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
+                $action_str = ' <a class="edit_user_details" href="'.route('edit_user_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a>&nbsp ';
 
                 $action_str .= ' <a class="delete_user text text-danger" login-user-id="'.$login_users_id.'" u-role="'.$row->role.'" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.

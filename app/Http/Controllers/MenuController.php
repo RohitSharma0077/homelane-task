@@ -140,7 +140,7 @@ class MenuController extends Controller
         if(!empty($o_list)){
             foreach ($o_list as $row) {
 
-                $action_str = ' <a class="edit_menu_details" href="'.route('edit_menu_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
+                $action_str = ' <a class="edit_menu_details" href="'.route('edit_menu_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a>&nbsp ';
 
                 $action_str .= ' <a class="delete_menu text text-danger" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
@@ -223,18 +223,10 @@ class MenuController extends Controller
                 } else {
                         $delete_flag = FALSE;
                         $menu_row = DB::table('menus')->where('id', '=', $u_id)->first();
-
-                        // get products assigned to Menu
-                        $products_in_cat = DB::table('products')->where('category_id', '=', $u_id)->get();
-                        if(count($products_in_cat) > 0 && !empty(count($products_in_cat))){
-                            // deleting all products assigned to selected Menu
-                            $pds_deleted = Product::where('category_id', $u_id)->delete();
-
-                        }
                         // deleting selected Menu
-                        $category_deleted = Menu::where('id', $u_id)->delete();
+                        $menu_deleted = Menu::where('id', $u_id)->delete();
 
-                        if( !empty($category_deleted ) ){
+                        if( !empty($menu_deleted ) ){
                             $return_status['status'] = TRUE;
                             $return_status['message'] = 'Menu successfully deleted';
                             $return_status['data'] = array();

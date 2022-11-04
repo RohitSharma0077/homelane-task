@@ -110,7 +110,7 @@ class Role extends Model
         return $result;
     }
 
-    public function save_pd_details($data, $id=NULL){
+    public function save_menu_details($data, $id=NULL){
 
         if(empty($data)){
             return FALSE;

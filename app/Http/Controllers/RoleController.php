@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Menu;
 use Validator;
-use Illuminate\Support\Facades\DB;
 use Auth;
 Use Redirect;
 use Session;
@@ -39,6 +41,8 @@ class RoleController extends Controller
     // Role controller methods
     public function RoleView()
     {
+        // $survey_code = Crypt::decryptString($survey_code);
+        // $survey_code = Crypt::encryptString(config('constants.SURVEY_CODES.1'));
         $breadcrumbs = array(
             array('name' => 'Home',
             'url' => route('home')),
@@ -139,11 +143,24 @@ class RoleController extends Controller
         if(!empty($o_list)){
             foreach ($o_list as $row) {
 
-                $action_str = ' <a class="edit_role_details" href="'.route('edit_role_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a> ';
+                $action_str = ' <a class="edit_role_details" href="'.route('edit_role_master_view', $row->id).'" title="Edit">'.'<i class="fa fa-pencil-square-o fa-sm action-icons"></i>'.'Edit</a>&nbsp ';
 
                 $action_str .= ' <a class="delete_role text text-danger" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
+                 $menu_list_nm_arr =  $menu_list_url_arr = array();
+                 $menu_list_nm_str = $menu_list_url_str = '';
+                 $assign_ids_arr = explode(",",$row->role_values);
+                 $menu_details = getUrlsWithMenuIds($assign_ids_arr);
+                 foreach($menu_details as $detail){
+                    $menu_list_nm_arr[] = $detail->menu_name;
+                   // $menu_list_url_arr[] = $detail->menu_URL;
+                 }
+                 //dd($row->role_values);
+                 $menu_list_nm_str = implode(", ",$menu_list_nm_arr);   
+                // $menu_list_url_str = implode(",",$menu_list_url_arr);          
+
+                $view_assigned_menus = ' <a role-name="'.$row->name.'" data-toggle="modal" data-target="#exampleModalCenter" class="view_assign_menus text text-info" menu-name="'.$menu_list_nm_str.'" href="javascript:void(0)" title="View">'.' <i class="fa fa-eye fa-sm action-icons"></i> '.'  View Details</a>';
 
                 // 1=SuperAdmin, 2= Admin, 3=subadmin
                 if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
@@ -159,7 +176,7 @@ class RoleController extends Controller
                 $data[] = (object) array(
                     'checkbox' => $checkbox,
                     'name'  => e(!empty($row->name)? $row->name:''),
-                    'role_values'  => e(!empty($row->role_values)? $row->role_values:''),
+                    'role_values'  => $view_assigned_menus,
                     'action'    =>	$action_col_chk
                 );
             }
@@ -316,27 +333,25 @@ class RoleController extends Controller
             'data' => ''
         );
 
-
-        $category_id = $request->category_id;
         $name = $request->name;
-        $role_values = $request->role_values;
-        $product_price = $request->product_price;
+        $menu_ids_arr = $request->menu_ids_arr;
+        $menu_ids_str = implode(",", $menu_ids_arr);
         $row_id = $request->row_id;
 
+        $login_user_fname = Auth::user()->first_name;
+        $login_user_role_id = Auth::user()->role;
+        $login_user_role = getUserRoleNameOnIds($login_user_role_id);
+        $login_user_lname = Auth::user()->last_name;
+        $login_user_fullname = $login_user_fname.' '.$login_user_lname; 
+
         $rules = array(
-            'category_id' => 'required',
-            'role_values' => 'required',
-            'product_price' => 'required',
-            'name' => 'required',         
-            'product_img' => 'nullable|mimes:jpeg,jpg,png,gif|max:5250',
+            'name' => 'required',
+            'menu_ids_arr' => 'required',
         );
         
         $messages = [
-            'category_id.required' 		=> 'User Role Required',
-            'role_values.required' 		=> 'First Name Role Required',
-            'product_price.required' 		=> 'Last Name Required',
-            'name.required' 			=>  'name Required',
-            'product_img.max' 	   		=> "Profile image size cant be greater than 5MB",
+            'name.required' 		=> 'Role Name Required',
+            'menu_ids_arr.required' 		=> 'Select at least 1 item',
         ];
         // Validate the request
         $validator = Validator::make($request->all() , $rules, $messages);
@@ -356,29 +371,12 @@ class RoleController extends Controller
         }
         else{
             $data_arr = array();
-            $data_arr += array('category_id' => $category_id);
-            if(!empty($request->product_img)){
-                $result_file = $this->saveFileToFolder($request->file('product_img'));  
-                if($result_file['status'] === TRUE){
-                    
-                    $data_arr += array('product_img' => $result_file['data']->getFileName());
-                }
-                else{
-    
-                    $return_status['message'] = 'Pic failed to save';
-                    $return_status['data'] = $errors;
-                }
-            }
-
             if(!empty($name)){
                 $data_arr += array('name' => $name);
             }
 
-            if(!empty($role_values)){
-                        $data_arr += array('role_values' => $role_values);
-            }
-            if(!empty($product_price)){
-                $data_arr += array('product_price' => $product_price);
+            if(!empty($menu_ids_str)){
+                        $data_arr += array('role_values' => $menu_ids_str);
             }
             
             if( empty($data_arr) ){
@@ -391,14 +389,15 @@ class RoleController extends Controller
                 $last_id;
                 
                 if(empty($row_id)){ //create new item
-                    $data_arr += array('created_at' => date('Y-m-d H:i:s'));
-                    $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
-                    $creating_product = Role::create($data_arr);
-                    $last_id = $creating_product->id;
-                    //$last_id = $this->role_model->save_pd_details($data_arr);
+                    $data_arr += array('created_on' => date('Y-m-d H:i:s'));
+                    $data_arr += array('created_by' => $login_user_fullname.':'. $login_user_role);
+                    // $creating_product = Role::create($data_arr);
+                    // $last_id = $creating_product->id;
+                    $last_id = $this->role_model->save_menu_details($data_arr);
                 }
                 else{
-                    $data_arr += array('updated_at' => date('Y-m-d H:i:s'));
+                    $data_arr += array('modified_on' => date('Y-m-d H:i:s'));
+                    $data_arr += array('modified_by' => $login_user_fullname.':'. $login_user_role);
                     $last_id = Role::where('id', $row_id)
                                        ->update($data_arr);
                     //$last_id = $this->role_model->save_pd_details($data_arr, $row_id);
@@ -412,81 +411,5 @@ class RoleController extends Controller
             }            
         }
         return response()->json($return_status);
-    }
-
-    //To store image 
-    function saveFileToFolder($file = NULL, $destination_path = ''){
-
-        if(empty($file)){
-
-            return array(
-                'status'	=> FALSE,
-                'message'	=> trans('missing_arg'),
-                'data'		=> array(),
-            );
-        }
-            
-
-        // $file = $request->file('image_name');
-        // $file = $request->file($filename);
-        
-        //Display File Name
-        $filename = $file->getClientOriginalName();
-        // echo 'File Name: '.$filename;
-        // echo '<br>';
-        
-        //Display File Extension
-        $file_extension = $file->getClientOriginalExtension();
-        // echo 'File Extension: '.$file_extension;
-        // echo '<br>';
-        
-        //Display File Real Path
-        $real_path = $file->getRealPath();
-        // echo 'File Real Path: '.$real_path;
-        // echo '<br>';
-        
-        //Display File Size
-        $file_size = $file->getSize();
-        // echo 'File Size: '.$file_size;
-        // echo '<br>';
-        
-        //Display File Mime Type
-        $file_mime_type = $file->getMimeType();
-        // echo 'File Mime Type: '.$file_mime_type;
-        // echo '<br>';
-        
-        //Display Destination Path
-        if(empty($destination_path)){
-            $destination_path = public_path('uploads/');
-        } else {
-            $destination_path = public_path('uploads/').$destination_path;
-        }
-        // echo 'File Destination Path: '.$destination_path;
-        if(!File::isDirectory($destination_path)) {
-            File::makeDirectory($destination_path, 0777, true, true);
-        }
-
-        
-
-        $image_name = time().'_'.$filename;
-        $image_name = preg_replace('/[^a-zA-Z0-9_.]/', '_', $image_name);
-
-        $uploaded_data = $file->move( $destination_path , $image_name );
-            
-        
-        if( !empty( $uploaded_data )){
-            return array(
-                'status'	=> TRUE,
-                'message'	=> 'Uploaded successfully.',
-                'data'		=> $uploaded_data,
-            );
-        }
-        else{
-            return array(
-                'status'	=> FALSE,
-                'message'	=> 'Not uploaded successfully. Please try again!!',
-                'data'		=> $uploaded_data,
-            );
-        }
     }
 }
