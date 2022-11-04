@@ -181,7 +181,14 @@ $(document).on('click', '.view_assign_menus', function() {
     var role_nm = $(this).attr("role-name");
     var menu_nm = $(this).attr("menu-name");
     //var menu_url = $(this).attr("menu-url");
-    var text ='<h5><b>Menu Name(s) - '+role_nm+'</b> <br></h5><h7>'+menu_nm+'</h7>';
+    if(role_nm == null || menu_nm == null || role_nm == '' || menu_nm == ''){
+        var not_assign = "No menu assigned yet !!!"
+        var text ='<h5><b>Menu Name(s) - '+role_nm+'</b> <br></h5><h7>'+not_assign+'</h7>';
+    }
+    else{
+        var text ='<h5><b>Menu Name(s) - '+role_nm+'</b> <br></h5><h7>'+menu_nm+'</h7>';
+    }
+   
     $( "#menu_dataid" ).append( text );
 });
 

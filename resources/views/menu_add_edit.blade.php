@@ -119,7 +119,7 @@
                 menu_URL: {
                     validators: {
                         notEmpty :{
-                            message: 'Enter description'
+                            message: 'Enter URL'
                         }
                     }
                 },
