@@ -31,8 +31,8 @@ class superadmin_seeder extends Seeder
             // 'email' => 'superadmin@gmail.com',
             'email' => Str::random(10).'@gmail.com',
             'password' => Hash::make('password'),
-            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            'created_on' => Carbon::now()->format('Y-m-d H:i:s'),
+            'medified_on' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
         // Run this cmd to add values in db :  php artisan db:seed --class=superadmin_seeder 

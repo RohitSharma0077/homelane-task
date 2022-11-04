@@ -49,19 +49,16 @@ Auth::routes();
 // common routes, access by all
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::post('/url_check/routes', [HomeController::class, 'checkURLRoutes'])->name('check_url_exist_in_routes');
+Route::post('/url/check/routes', [HomeController::class, 'checkURLRoutes'])->name('check_url_exist_in_routes');
 Route::get('/coming/soon', [HomeController::class, 'CommingSoonPage'])->name('coming_soon');
-Route::get('users/listing', [UsersController::class, 'UsersView'])->name('users_view');
-Route::get('users/ajax/list', [UsersController::class, 'UsersAjaxList'])->name('users_ajax_list');
-Route::post('delete/user', [UsersController::class, 'DeleteUser'])->name('delete_user');
-Route::get('users/edit/{id?}', [UsersController::class, 'EditUserMasterView'])->name('edit_user_master_view');
-Route::post('save/users/details', [UsersController::class, 'SaveUsersDetails'])->name('save_users_details');
 
-// Route::middleware(['auth', 'role_super:superadmin'])->group(function () {
-//     // User is authentication and has super admin role
-//     Route::get('/super', [HomeController::class, 'index'])->name('home_super');
-   
-// });
+Route::middleware(['auth', 'verify_url:verifyUrl'])->group(function () {
+    // User Roles
+    Route::get('users/listing', [UsersController::class, 'UsersView'])->name('users_view');
+    Route::get('users/ajax/list', [UsersController::class, 'UsersAjaxList'])->name('users_ajax_list');
+    Route::post('delete/user', [UsersController::class, 'DeleteUser'])->name('delete_user');
+    Route::get('users/edit/{id?}', [UsersController::class, 'EditUserMasterView'])->name('edit_user_master_view');
+    Route::post('save/users/details', [UsersController::class, 'SaveUsersDetails'])->name('save_users_details');
 
     // Menu Routes
     Route::get('menu/listing', [MenuController::class, 'MenuView'])->name('menu_view');
@@ -76,3 +73,11 @@ Route::post('save/users/details', [UsersController::class, 'SaveUsersDetails'])-
     Route::post('delete/role', [RoleController::class, 'DeleteRole'])->name('delete_role');
     Route::get('role/edit/{id?}', [RoleController::class, 'EditRoleMasterView'])->name('edit_role_master_view');
     Route::post('save/role/details', [RoleController::class, 'SaveRoleDetails'])->name('save_role_details');
+
+    // Dummy menus pages
+    Route::get('super/menu/1', [MenuController::class, 'SuperMenu1'])->name('supermenu1');
+    
+   
+});
+
+

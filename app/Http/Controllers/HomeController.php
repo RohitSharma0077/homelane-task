@@ -56,11 +56,12 @@ class HomeController extends Controller
         $user_count = User::where('deleted_at','=',NULL)->count();
         $role_count = Role::where('deleted_at','=',NULL)->count();
 
+        $u_count = $r_count = $m_count = $menu_count = 0;
         $assigned_menu_ids = getAssignedMenuIdsToRole();
-        $menu_ids_arr = explode(",", $assigned_menu_ids);
-        $menu_count = count($menu_ids_arr);
-
-        $u_count = $r_count = $m_count = 0;
+        if(!empty($assigned_menu_ids)){
+            $menu_ids_arr = explode(",", $assigned_menu_ids);
+            $menu_count = count($menu_ids_arr);
+        }
         if(!empty($user_count)){
             $u_count = $user_count;
         }
@@ -121,8 +122,6 @@ class HomeController extends Controller
             $get_saved_url = $request->s_url;
             $get_name = $request->s_name;
             $current_url = URL::to('');
-            //$get_full_path = trim(parse_url($get_saved_url, PHP_URL_PATH), '/');
-            $get_only_slug = basename(parse_url($get_saved_url, PHP_URL_PATH));
             $getRouteSlugs = getAllRouteSlugs();
 
             // if there is third part url like youtube, then redirect just there
@@ -133,6 +132,10 @@ class HomeController extends Controller
 
            // check the url is not a third party url
             if($get_current_url_host == $get_saved_url_host){
+                // host name are same
+                 $get_saved_url_slug = str_replace($current_url.'/', "", $get_saved_url);
+                 $get_only_slug = trim($get_saved_url_slug);
+                 //dd($get_only_slug);
 
                  // check whether saved url define in routes or not
                 if (!in_array($get_only_slug, $getRouteSlugs)) {
@@ -151,7 +154,7 @@ class HomeController extends Controller
                     $return_status['url'] = $get_saved_url;
                 }
             }
-            else{ // url is third party
+            else{ // url is third party, open in new tab
 
                     $return_status['status'] = TRUE;
                     $return_status['message'] = 'Success';

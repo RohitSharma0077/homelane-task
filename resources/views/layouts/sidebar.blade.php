@@ -90,7 +90,11 @@
               <h5 style="color:#c2c7d0;" class="d-block">Menu List</h5>
             </div>
           </div>
-          <?php foreach($menu_details as $detail){ ?>
+          <?php 
+          if(count($menu_details) <= 0){?>
+              <span class="right badge badge-danger">No menu added yet.</span>
+          <?php }
+          foreach($menu_details as $detail){ ?>
             <li class="nav-item">
               <a href="javascript:void(0)" s-url="{{ $detail->menu_URL }}" s-name = "{{ $detail->menu_name }}" class="nav-link url_check">
                 <i class="nav-icon fas fas fa-check"></i>

@@ -15,7 +15,18 @@ function getLoggedInUserRole(){
     }
 }
 
-//To get menu ids based on role of logged in user
+// to get all saved menu url list 
+function getAllMenuUrls()
+{
+    $menu_list = Menu::all();
+    $all_saved_menu_urls = array();
+    foreach($menu_list as $detail){
+        $all_saved_menu_urls[] = $detail->menu_URL;
+    }
+    return $all_saved_menu_urls;   // non deleted rows
+}
+
+//To get menu ids based on role of logged in user : Role specific
 function getAssignedMenuIdsToRole(){
 		
     $loggedin_users_role_id = Auth::user()->role;
@@ -24,7 +35,7 @@ function getAssignedMenuIdsToRole(){
     return $assigned_menu_ids;
 }
 
-//To get saved URL based on menu ids
+//To get saved URL based on menu ids: Role specific
 function getUrlsWithMenuIds($menu_ids_arr = NULL){
     if(empty($menu_ids_arr)){
         return FALSE;
@@ -36,7 +47,7 @@ function getUrlsWithMenuIds($menu_ids_arr = NULL){
     return $menu_details;
 }
 
-// to get existing routes 
+// to get existing routes in web.php
 function getAllRouteSlugs()
 {
     $slugs  = [];
@@ -58,12 +69,13 @@ function getUserRoleNameOnIds($role_id = NULL)
     return $r_name;
 }
 
-// to get roles list 
+// to get all roles list 
 function getUserRoleList($role_id = NULL)
 {
     $roles_list = Role::all();
     return $roles_list;
 }
+
 
 
 ?>

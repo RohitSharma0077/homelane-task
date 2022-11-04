@@ -382,4 +382,27 @@ class MenuController extends Controller
         }
         return response()->json($return_status);
     }
+
+        // Menu controller methods 
+        public function SuperMenu1()
+        {
+            $breadcrumbs = array(
+                array('name' => 'Home',
+                'url' => route('home')),
+                array('name' => 'SuperMenu-1',
+                'url' =>  ''),
+                
+            );
+            $data = [
+                'page_title' 	 => 'Super Menu',
+                'active_sidebar' => '',
+                'breadcrumbs' => $breadcrumbs,
+                "heading" => 'Welcome to Super Menu-1',
+    
+            ];
+            //dd($data);
+            
+            return view('super_menu1', $data);
+            
+        }
 }    
