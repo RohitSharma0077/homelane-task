@@ -183,10 +183,12 @@ $(document).on('click', '.view_assign_menus', function() {
     //var menu_url = $(this).attr("menu-url");
     if(role_nm == null || menu_nm == null || role_nm == '' || menu_nm == ''){
         var not_assign = "No menu assigned yet !!!"
-        var text ='<h5><b>Menu Name(s) - '+role_nm+'</b> <br></h5><h7>'+not_assign+'</h7>';
+        //var text ='<h5><b>Menu Name(s) - '+role_nm+'</b> <br></h5><h7>'+not_assign+'</h7>';
+        var text ='<h5><b>Menu Name(s) -   </b><span class="right badge badge-danger">'+role_nm+'</span></h5><br><h7>'+not_assign+'</h7>';
     }
     else{
-        var text ='<h5><b>Menu Name(s) - '+role_nm+'</b> <br></h5><h7>'+menu_nm+'</h7>';
+        var text ='<h5><b>Menu Name(s) -   </b><span class="right badge badge-danger">'+role_nm+'</span></h5><br><h7>'+menu_nm+'</h7>';
+        // var text ='<h5><b>Menu Name(s) - '+role_nm+'</b> <br></h5><h7>'+menu_nm+'</h7>';
     }
    
     $( "#menu_dataid" ).append( text );
