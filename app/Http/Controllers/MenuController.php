@@ -146,6 +146,8 @@ class MenuController extends Controller
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
 
+                $log_details = ' <a data-uid="'.$row->id.'" class="log_details text text-info" list-tab="menu" href="javascript:void(0)" title="View">'.' <i class="fa fa-eye fa-sm action-icons"></i> '.'  View</a>';
+
                 // 1=SuperAdmin, 2= Admin
                 if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
                     $action_col_chk = $action_str;
@@ -160,6 +162,7 @@ class MenuController extends Controller
                     'checkbox' => $checkbox,
                     'menu_name'  => e(!empty($row->menu_name)? $row->menu_name:''),
                     'menu_URL'  => e(!empty($row->menu_URL)? $row->menu_URL:''),
+                    'log_details'    =>	$log_details,
                     'action'    =>	$action_col_chk
                 );
             }
@@ -223,6 +226,8 @@ class MenuController extends Controller
                 } else {
                         $delete_flag = FALSE;
                         $menu_row = DB::table('menus')->where('id', '=', $u_id)->first();
+
+                        $check_menu_asgn_to_any_role =   $this->menu_model->check_menu_asgn_to_any_role($u_id); 
                         // deleting selected Menu
                         $menu_deleted = Menu::where('id', $u_id)->delete();
 

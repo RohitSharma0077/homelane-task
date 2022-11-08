@@ -21,6 +21,7 @@
                             <th><input type="checkbox" name="select_all" value="1" class="select_all_checkbox" id="select-all-checkbox"></th>
                             <th>Menu Name</th>
                             <th>Menu URL</th>
+                            <th>Log Details</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -67,6 +68,7 @@
 	        	{ "data": "checkbox", orderable: false, searchable: false},
 	        	{ "data": "menu_name"},
                 { "data": "menu_URL"},
+                { "data": "log_details", orderable: false, searchable: false},
 	            { "data": "action", orderable: false, searchable: false  }
 	        ]
 		});

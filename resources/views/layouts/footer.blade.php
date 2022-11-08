@@ -154,4 +154,67 @@ function updateDataTableSelectAllCtrl(table){
    	}
 }
 
+//logs details
+$(document).on('click', '.log_details', function() {
+    var u_id = $(this).attr("data-uid");
+    var list_tab = $(this).attr("list-tab");
+       // if(list_tab == "menu"){
+            $this = $(this);
+            $this.prop("disabled", true);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('log_details') }}",
+                data: {'u_id': u_id, 'list_tab': list_tab },
+                headers: {
+                    // 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                },
+                // dataType: 'json',
+                success: function (result) {
+                    $this.prop("disabled", false);
+                    if(result.status == true){
+                                $(".log_details_mbody").html(result.data);
+                                $("#log_details_mid").modal('show');
+                                $(".log_details_mbody").show();
+                    
+                    }
+                    else{
+                            showSweetAlertMessage(result.status,result.message);
+                    }    
+                    
+                },
+                error: function (data) {
+                    // console.log('Error:', data);
+                    $this.prop("disabled", false);
+                    var parse_error = JSON.parse(data.responseText);
+                    // console.log('parse_error:'+ parse_error.error);
+                    if(typeof parse_error.error != 'undefined' && parse_error.error == 'Unauthenticated.'){
+                        showSweetAlertMessage(false,'Your session has expired. Please login again.');
+                        $(".close, .modal").click(function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+       // }
+    
+});
+//logs details close
+
 </script>
+
+<div class="modal" id="log_details_mid" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Log Details</h4>
+                <button type="button" class="close modal_close" data-dismiss="modal" onclick="" >&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="log_details_mbody">   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

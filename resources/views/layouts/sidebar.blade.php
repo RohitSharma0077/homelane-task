@@ -48,7 +48,7 @@
             <a href="{{ route('home') }}" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                Landing Page
+                Dashboard
                 <span class="right badge badge-danger"></span>
               </p>
             </a>

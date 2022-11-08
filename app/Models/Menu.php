@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\User;
+use App\Models\Role;
+use App\Models\Menu;
 use Auth;
 
 class Menu extends Model
@@ -118,6 +121,44 @@ class Menu extends Model
             return FALSE; 
         }
         return $result;
+
+    }
+
+    public function check_menu_asgn_to_any_role($id=NULL){
+
+        $menu_id = $id;
+        // get all roles
+        $roles_list = Role::all();
+        // check if menu id assign to any role on by one
+        foreach($roles_list as $role){
+
+            $role_id = $role->id;
+            $assgn_menus = $role->role_values;
+
+            if(!empty($assgn_menus)){
+
+                $assgn_menus_arr = explode(',',$assgn_menus); 
+                if(in_array($menu_id, $assgn_menus_arr)){
+                
+                    $get_indx = array_search($menu_id, $assgn_menus_arr);
+                    //delete the menu from role
+                    unset($assgn_menus_arr[$get_indx]);
+                    $assgn_menus_str = implode(",", $assgn_menus_arr);
+                    $data = array();
+                    $data = array('role_values' => $assgn_menus_str);
+                    $result = DB::table('roles')
+                            ->where('roles.id', $role_id)
+                            ->update($data);
+                    //dd($assgn_menus_arr);
+                }
+
+            }
+            else{
+                continue;
+            }
+            
+            //dd($assgn_menus_arr);
+        }
 
     }
 }

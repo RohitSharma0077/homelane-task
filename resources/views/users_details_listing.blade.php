@@ -25,6 +25,7 @@
                             <th>Last Name</th>
                             <th>User Email</th>
                             <th>Role</th>
+                            <th>Log Details</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -73,6 +74,7 @@
                 { "data": "last_name"},
 				{ "data": "email"},
 				{ "data": "role"},
+                { "data": "log_details", orderable: false, searchable: false},
 	            { "data": "action", orderable: false, searchable: false  }
 	        ]
 		});

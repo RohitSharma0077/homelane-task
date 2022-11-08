@@ -49,7 +49,7 @@ class HomeController extends Controller
         $breadcrumbs = array(
 			array('name' => 'Home',
 			'url' => route('home')),
-			array('name' => 'Landing Page',
+			array('name' => 'Dashboard',
 			'url' =>  ''),
 			
 		);
@@ -78,7 +78,7 @@ class HomeController extends Controller
             "menu_count" => $m_count,  
             "user_count"    => $u_count,  
             "breadcrumbs" => $breadcrumbs,
-            "heading" => 'Landing Page',
+            "heading" => 'Dashboard',
 
           
         );
@@ -169,6 +169,53 @@ class HomeController extends Controller
                 $return_status
             );
 
+    }
+
+    public function LogDetails(Request $request)
+    {
+        $return_status = array(
+            'status' => FALSE,
+            'message' => "Something went wrong",
+            'data' => ''
+        );
+          $data_row  = $res_data = "";
+         switch($request->list_tab){
+            case 'menu':
+                 $data_row = DB::table('menus')->where('id', '=', $request->u_id)->first();
+                break;
+            case 'role':
+                $data_row = DB::table('roles')->where('id', '=', $request->u_id)->first();
+                break;
+            case 'user':
+                $data_row = DB::table('users')->where('id', '=', $request->u_id)->first();
+            break;
+         }
+
+        if(!empty($data_row)){
+
+            if(empty($data_row->modified_on)){
+                $modified_on = "-";
+            }
+            else{
+                $modified_on = $data_row->modified_on;
+
+            }
+            if(empty($data_row->modified_by)){
+                $modified_by = "-";
+            }
+            else{
+                $modified_by = $data_row->modified_by;
+            }
+
+            $res_data = "<div style='overflow-x:auto;'><ul><li><b>Created on:</b>  ".$data_row->created_on."</li>
+            <li><b>Created by:</b>  ".$data_row->created_by."</li><li><b>Modified on:</b>  ".$modified_on."</li><li><b>Modified by:</b>  ".$modified_by."</li></ul></div>";
+            $return_status = array('status' => true,'mesage' => "Sucess",'data' => $res_data);
+
+        }
+           
+			return response()->json($return_status);
+            
+         
     }
 
     

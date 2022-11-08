@@ -154,6 +154,7 @@ class UsersController extends Controller
                 $action_str .= ' <a class="delete_user text text-danger" login-user-id="'.$login_users_id.'" u-role="'.$row->role.'" data-uid="'.$row->id.'" href="javascript:void(0)" title="Delete">'.
                                     '<i class="fa fa-trash fa-sm action-icons"></i>'.
                                 '</a>';
+                $log_details = ' <a data-uid="'.$row->id.'" class="log_details text text-info" list-tab="user" href="javascript:void(0)" title="View">'.' <i class="fa fa-eye fa-sm action-icons"></i> '.'  View</a>';                
 
                 // 1=SuperAdmin, 2= Admin
                 if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
@@ -172,6 +173,7 @@ class UsersController extends Controller
                     'first_name'  => e(!empty($row->first_name)? $row->first_name:''),
                     'last_name'  => e(!empty($row->last_name)? $row->last_name:''),
                     'role'  => $u_role,
+                    'log_details'    =>	$log_details,
                     'action'    =>	$action_col_chk
                 );
         	}

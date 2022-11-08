@@ -794,12 +794,12 @@ h6 {
     top: -10px;
 }
 
-.fileupload {
+.log_details_mid {
     overflow: hidden;
     position: relative;
 }
 
-.fileupload input.upload {
+.log_details_mid input.upload {
     cursor: pointer;
     filter: alpha(opacity=0);
     font-size: 20px;

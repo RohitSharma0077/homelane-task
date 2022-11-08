@@ -1,4 +1,4 @@
-// Landing Page 1 Morris-chart
+// Dashboard 1 Morris-chart
 $( function () {
 	"use strict";
 

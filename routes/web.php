@@ -51,7 +51,10 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/url/check/routes', [HomeController::class, 'checkURLRoutes'])->name('check_url_exist_in_routes');
 Route::get('/coming/soon', [HomeController::class, 'CommingSoonPage'])->name('coming_soon');
+Route::post('/log/details', [HomeController::class, 'LogDetails'])->name('log_details');
+Route::post('/view/assign/menus/ajax', [RoleController::class, 'ViewAssignMenuuAjax'])->name('view_assign_menus_ajax');
 
+// verify url for existing routes
 Route::middleware(['auth', 'verify_url:verifyUrl'])->group(function () {
     // User Roles
     Route::get('users/listing', [UsersController::class, 'UsersView'])->name('users_view');
@@ -75,9 +78,16 @@ Route::middleware(['auth', 'verify_url:verifyUrl'])->group(function () {
     Route::post('save/role/details', [RoleController::class, 'SaveRoleDetails'])->name('save_role_details');
 
     // Dummy menus pages
-    Route::get('super/menu/1', [MenuController::class, 'SuperMenu1'])->name('supermenu1');
-    
+    Route::get('super/menu/1', [MenuController::class, 'SuperMenu1'])->name('supermenu1');   
    
 });
 
+    // checking upcoming url is registered in this file or not
+    $isRoutePresent= isRoutePresent(url()->full());
+    if(!$isRoutePresent){
+           //  dd($isRoutePresent);
+           // return \Redirect::to('/')->with(['type' => 'error','err_msg' => 'Menu is not registered yet']);
+          
+    }
 
+?>

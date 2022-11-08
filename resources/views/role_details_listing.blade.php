@@ -21,6 +21,7 @@
                             <th><input type="checkbox" name="select_all" value="1" class="select_all_checkbox" id="select-all-checkbox"></th>
                             <th>Role Name</th>
                             <th>Assigned Menu(s)</th>
+                            <th>Log Details</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -67,6 +68,7 @@
 	        	{ "data": "checkbox", orderable: false, searchable: false},
 	        	{ "data": "name"},
                 { "data": "role_values", orderable: false, searchable: false },
+                { "data": "log_details", orderable: false, searchable: false},
 	            { "data": "action", orderable: false, searchable: false  }
 	        ]
 		});
@@ -200,6 +202,51 @@ $(document).on('click', '.cls_modal', function() {
     $("#menu_dataid").empty();
     $("#menu_dataid").val('False');
 });
+
+//assigned menu details
+$(document).on('click', '.view_assign_menus_ajax', function() {
+    var u_id = $(this).attr("data-uid");
+    var role_nm = $(this).attr("role-name");
+            $this = $(this);
+            $this.prop("disabled", true);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('view_assign_menus_ajax') }}",
+                data: {'u_id': u_id, 'role_nm': role_nm},
+                headers: {
+                    // 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                },
+                // dataType: 'json',
+                success: function (result) {
+                    $this.prop("disabled", false);
+                    if(result.status == true){
+                                $("#menu_dataid").html(result.data);
+                                $("#exampleModalCenter").modal('show');
+                                $("#menu_dataid").show();
+                    
+                    }
+                    else{
+                            showSweetAlertMessage(result.status,result.message);
+                    }    
+                    
+                },
+                error: function (data) {
+                    // console.log('Error:', data);
+                    $this.prop("disabled", false);
+                    var parse_error = JSON.parse(data.responseText);
+                    // console.log('parse_error:'+ parse_error.error);
+                    if(typeof parse_error.error != 'undefined' && parse_error.error == 'Unauthenticated.'){
+                        showSweetAlertMessage(false,'Your session has expired. Please login again.');
+                        $(".close, .modal").click(function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+    
+});
+//assigned menu details close
 
 </script>
 

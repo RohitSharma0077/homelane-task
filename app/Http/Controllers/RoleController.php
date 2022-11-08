@@ -154,13 +154,14 @@ class RoleController extends Controller
                  $menu_details = getUrlsWithMenuIds($assign_ids_arr);
                  foreach($menu_details as $detail){
                     $menu_list_nm_arr[] = $detail->menu_name;
-                   // $menu_list_url_arr[] = $detail->menu_URL;
                  }
-                 //dd($row->role_values);
                  $menu_list_nm_str = implode(", ",$menu_list_nm_arr);   
-                // $menu_list_url_str = implode(",",$menu_list_url_arr);          
+    
+                // $view_assigned_menus = ' <a role-name="'.$row->name.'" data-toggle="modal" data-target="#exampleModalCenter" class="view_assign_menus text text-info" menu-name="'.$menu_list_nm_str.'" href="javascript:void(0)" title="View">'.' <i class="fa fa-eye fa-sm action-icons"></i> '.'  View</a>';
 
-                $view_assigned_menus = ' <a role-name="'.$row->name.'" data-toggle="modal" data-target="#exampleModalCenter" class="view_assign_menus text text-info" menu-name="'.$menu_list_nm_str.'" href="javascript:void(0)" title="View">'.' <i class="fa fa-eye fa-sm action-icons"></i> '.'  View Details</a>';
+                $view_assigned_menus_ajax = ' <a role-name="'.$row->name.'" data-uid="'.$row->id.'" class="view_assign_menus_ajax text text-info" href="javascript:void(0)" title="View">'.' <i class="fa fa-eye fa-sm action-icons"></i> '.'  View</a>';
+
+                $log_details = ' <a data-uid="'.$row->id.'" class="log_details text text-info" list-tab="role" href="javascript:void(0)" title="View">'.' <i class="fa fa-eye fa-sm action-icons"></i> '.'  View</a>';
 
                 // 1=SuperAdmin, 2= Admin, 3=subadmin
                 if($login_users_role == 1 || $login_users_role == 2 || $login_users_role == 3){
@@ -176,7 +177,8 @@ class RoleController extends Controller
                 $data[] = (object) array(
                     'checkbox' => $checkbox,
                     'name'  => e(!empty($row->name)? $row->name:''),
-                    'role_values'  => $view_assigned_menus,
+                    'role_values'  => $view_assigned_menus_ajax,
+                    'log_details'    =>	$log_details,
                     'action'    =>	$action_col_chk
                 );
             }
@@ -411,5 +413,42 @@ class RoleController extends Controller
             }            
         }
         return response()->json($return_status);
+    }
+
+    public function ViewAssignMenuuAjax(Request $request)
+    {
+        $return_status = array(
+            'status' => FALSE,
+            'message' => "Something went wrong",
+            'data' => ''
+        );
+        $res_data = "";
+
+        $role_id = $request->u_id;
+        $role_nm = $request->role_nm;
+        $menu_list_nm_arr =  $menu_list_url_arr = array();
+        $menu_list_nm_str = $menu_list_url_str = '';
+
+        $data_row = DB::table('roles')->where('id', '=', $request->u_id)->first();
+        $assign_ids_arr = explode(",",$data_row->role_values);
+       // dd($data_row->role_values);
+
+        if(empty($data_row->role_values) || $data_row->role_values == NULL || !isset($data_row->role_values)){
+            $not_assign = "No menu assigned yet !!!";
+            $res_data ="<div style='overflow-x:auto;'><h5><b>Menu Name(s) -   </b><span class='right badge badge-danger'>".$role_nm."</span></h5><br><h7>".$not_assign."</h7></div>";
+
+            $return_status = array('status' => true,'mesage' => "Sucess",'data' => $res_data);
+            return response()->json($return_status);
+        }
+        $menu_details = getUrlsWithMenuIds($assign_ids_arr);
+        foreach($menu_details as $detail){
+          $menu_list_arr[] = '<a href="'.$detail->menu_URL.'">'.$detail->menu_name.'</a>';
+        }
+         $menu_list_str = implode(", ",$menu_list_arr);
+         //dd($menu_list_str);
+         $res_data ='<div style="overflow-x:auto;"><h5><b>Menu Name(s) -   </b><span class="right badge badge-danger">'.$role_nm.'</span></h5><br><h7>'.$menu_list_str.'</h7></div>';   
+        $return_status = array('status' => true,'mesage' => "Sucess",'data' => $res_data);
+        return response()->json($return_status);
+    
     }
 }

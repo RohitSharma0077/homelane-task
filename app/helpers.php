@@ -76,6 +76,16 @@ function getUserRoleList($role_id = NULL)
     return $roles_list;
 }
 
+function isRoutePresent($urlToCheck)
+{
+    $available_url = [];
+    $routes = Route::getRoutes();
+    foreach ($routes as $route) {
+        array_push($available_url, url($route->uri));
+    }
+    return in_array($urlToCheck, $available_url);
+}
+
 
 
 ?>
