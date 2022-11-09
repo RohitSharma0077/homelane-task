@@ -11,7 +11,9 @@
             <div class="col-12">
             <div class="card">
                 <div class="card-header text-right">
+                @if(getLoggedInUserRole() != 5 && getLoggedInUserRole() != 4)
                      <a class="btn btn-success" href="{{ route('edit_role_master_view') }}"><i class="fa fa-plus-circle"></i> Add New</a>
+                @endif
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
