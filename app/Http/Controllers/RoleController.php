@@ -451,4 +451,27 @@ class RoleController extends Controller
         return response()->json($return_status);
     
     }
+
+    // How we catch exception example
+    public function exception_example(Request $request)
+	{
+		$return_status = array(
+			'status'  => FALSE,
+			'message' => "",
+			'data'    => $request->all(),
+			'code'	  => ""
+		);
+		try {
+
+        } catch (\Exception $e) {
+			$return_status['message'] = $e->getMessage();
+		} catch (\Throwable $e) {
+			$return_status['message'] = $e->getMessage();
+		}
+
+		// dd($request->all());
+		return response()->json( //Ajax response in json format
+			$return_status
+		);
+	}
 }

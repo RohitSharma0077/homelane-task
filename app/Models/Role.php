@@ -25,7 +25,7 @@ class Role extends Model
     public function get_menu_list(){
 
         $query = DB::table('menus')
-        ->select(DB::raw('menus.id, menus.menu_name'));
+        ->select(DB::raw('menus.id, menus.menu_name'))->where('menus.deleted_at', NULL);
         $query->groupBy('menus.menu_name');
     
             $result = $query->get();
